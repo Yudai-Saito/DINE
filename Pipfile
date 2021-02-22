@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 "discord.py" = "*"
+line-bot-sdk = "*"
 
 [dev-packages]
 
