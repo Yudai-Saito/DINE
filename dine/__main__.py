@@ -1,9 +1,19 @@
 #coding : utf-8
 
 import logging.config
-from discordbot import Dine
+from multiprocessing import Process
+
+from discord_bot import Dine
+from line_bot import Line
+
+def line_run():
+    linebot = Line()
+    linebot.begin()
 
 def main():
+    line_process = Process(target=line_run, daemon=True)
+    line_process.start()
+
     bot = Dine()
     bot.begin()
 
