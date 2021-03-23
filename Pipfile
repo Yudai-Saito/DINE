@@ -8,6 +8,7 @@ name = "pypi"
 line-bot-sdk = "*"
 responder = "*"
 sqlalchemy = "*"
+psycopg2 = "*"
 
 [dev-packages]
 
