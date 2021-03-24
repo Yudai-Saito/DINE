@@ -5,6 +5,7 @@ from multiprocessing import Process
 
 from discord_bot import Dine
 from line_bot import Line
+from db import create_db
 
 def line_run():
     linebot = Line()
@@ -22,5 +23,7 @@ if __name__ == "__main__":
     logger = logging.getLogger("__name__")
 
     logging.info("start_program")
+
+    create_db()
 
     main()
