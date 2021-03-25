@@ -27,6 +27,15 @@ class UserInfo(Base):
     text_notice = Column(Boolean, default=True)
     voice_notice = Column(Boolean, default=True)
 
+class LineCrud:
+    def __init__(self):
+        self.__Session = sessionmaker(bind=engine)
+        self.__session = Session() 
+
+    def add_line_id_to_password(self, line_id):
+        self.__session.add(Password(line_id=line_id))
+        self.__session.commit()
+
 def create_db():
     engine = create_engine("{}://{}:{}@{}:{}/{}"\
     			.format(os.environ["DBMS"], os.environ["USER_NAME"], os.environ["PASSWORD"], \
