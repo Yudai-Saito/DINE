@@ -35,6 +35,10 @@ class LineCrud:
     def add_line_id_to_password(self, line_id):
         self.__session.add(Password(line_id=line_id))
         self.__session.commit()
+    
+    def add_password_to_password(self, password):
+        self.__session.add(Password(password=password))
+        self.__session.commit()
 
 def create_db():
     engine = create_engine("{}://{}:{}@{}:{}/{}"\
