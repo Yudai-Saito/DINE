@@ -9,10 +9,14 @@ from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
+from db import LineCrud
+
 api = responder.API()
 
 line_bot_api = LineBotApi(os.environ["LINE_ACCESS_TOKEN"])
 handler = WebhookHandler(os.environ["LINE_CHANNEL_SECRET"])
+
+line_crud = LineCrud()
 
 @api.route("/callback")
 async def on_post(req, resp):
@@ -39,7 +43,8 @@ def handle_message(event):
 
 @handler.add(FollowEvent)
 def following(event):
-    pass
+    
+    line_crud.add_following_to_password(event.source.user_id, password)
 
 class Line():
     def begin(self):
