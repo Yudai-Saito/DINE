@@ -37,6 +37,10 @@ async def on_post(req, resp):
 def handle_message(event):
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=event.message.text))
 
+@handler.add(FollowEvent)
+def following(event):
+    pass
+
 class Line():
     def begin(self):
         logger = logging.getLogger("line")
