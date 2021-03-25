@@ -30,14 +30,10 @@ class UserInfo(Base):
 class LineCrud:
     def __init__(self):
         self.__Session = sessionmaker(bind=engine)
-        self.__session = Session() 
+        self.__session = self.__Session() 
 
-    def add_line_id_to_password(self, line_id):
-        self.__session.add(Password(line_id=line_id))
-        self.__session.commit()
-    
-    def add_password_to_password(self, password):
-        self.__session.add(Password(password=password))
+    def add_following_to_password(self, line_id, password):
+        self.__session.add(Password(line_id=line_id, password=password))
         self.__session.commit()
 
 def create_db():
