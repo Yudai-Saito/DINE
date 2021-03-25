@@ -35,6 +35,9 @@ class LineCrud:
     def add_following_to_password(self, line_id, password):
         self.__session.add(Password(line_id=line_id, password=password))
         self.__session.commit()
+    
+    def exists_password(self, password):
+        return self.__session.query(self.__session.query(Password).filter(Password.password == password).exists()).scalar()
 
 def create_db():
     engine = create_engine("{}://{}:{}@{}:{}/{}"\
