@@ -6,3 +6,6 @@
 
 /log/main/*
 !.gitkeep
+
+/log/sqlalchemy/*
+!.gitkeep
