@@ -8,9 +8,10 @@ import responder
 
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, FollowEvent, TextMessage, TextSendMessage
+from linebot.models import MessageEvent, FollowEvent, TextMessage, TextSendMessage, FlexSendMessage
 
 from db import LineCrud
+from flex_message import follow_flex_message
 
 api = responder.API()
 
@@ -45,7 +46,13 @@ def handle_message(event):
 @handler.add(FollowEvent)
 def following(event):
     password = Line.password_gen()
+
+    follow_flex_message["header"]["contents"][0]["text"] = "!dine add " + str(password)
+
     line_crud.add_following_to_password(event.source.user_id, password)
+
+    line_bot_api.push_message(event.source.user_id, FlexSendMessage(alt_text="登録メッセージ", contents=follow_flex_message))
+    line_bot_api.push_message(event.source.user_id, TextSendMessage("上記のコマンドを登録したいサーバーのDiscordチャットに入力してください！"))
 
 class Line():
     @staticmethod
