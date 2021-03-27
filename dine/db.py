@@ -2,8 +2,14 @@
 import os
 from sqlalchemy import create_engine, Column, Integer, String, Boolean
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+engine = create_engine("{}://{}:{}@{}:{}/{}"\
+    			.format(os.environ["DBMS"], os.environ["USER_NAME"], os.environ["PASSWORD"], \
+                os.environ["HOST"], os.environ["DBMS_PORT"], os.environ["DATABASE"]), encoding="utf8", echo=True)
 
 Base = declarative_base()
+
 class Users(Base):
     __tablename__ = "users"
     line_id = Column(String, primary_key=True)
@@ -40,8 +46,4 @@ class LineCrud:
         return self.__session.query(self.__session.query(Password).filter(Password.password == password).exists()).scalar()
 
 def create_db():
-    engine = create_engine("{}://{}:{}@{}:{}/{}"\
-    			.format(os.environ["DBMS"], os.environ["USER_NAME"], os.environ["PASSWORD"], \
-                os.environ["HOST"], os.environ["PORT"], os.environ["DATABASE"]), encoding="utf8", echo=True)
-
     Base.metadata.create_all(engine)
