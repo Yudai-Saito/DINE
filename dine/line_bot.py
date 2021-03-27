@@ -2,12 +2,13 @@
 
 import os
 import json
+import random
 import logging
 import responder
 
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.models import MessageEvent, FollowEvent, TextMessage, TextSendMessage
 
 from db import LineCrud
 
@@ -43,12 +44,16 @@ def handle_message(event):
 
 @handler.add(FollowEvent)
 def following(event):
-    
+    password = Line.password_gen()
     line_crud.add_following_to_password(event.source.user_id, password)
 
 class Line():
+    @staticmethod
+    def password_gen():
+        password = random.randint(1000,9999)
+        if line_crud.exists_password(password) == True:
+            return password_gen()
+        return password
+
     def begin(self):
-        logger = logging.getLogger("line")
-        
-        port = int(os.environ.get("PORT", 8000))
-        api.run(address="0.0.0.0", port=port, debug=True)
+        api.run(address="0.0.0.0", port=8000, debug=True, log_config=None)
