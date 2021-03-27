@@ -25,10 +25,10 @@ class DiscordServer(Base):
 	server_id = Column(String, primary_key=True)
 	channel_id = Column(String)
 
-class UserInfo(Base):
-    __tablename__ = "user_info"
-    line_id = Column(String, primary_key=True)
+class ServerInfo(Base):
+    __tablename__ = "server_info"
     server_id = Column(String, primary_key=True)
+    line_id = Column(String)
     auth_flag = Column(Boolean, default=False)
     text_notice = Column(Boolean, default=True)
     voice_notice = Column(Boolean, default=True)
