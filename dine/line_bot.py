@@ -50,7 +50,7 @@ def following(event):
 class Line():
     @staticmethod
     def password_gen():
-        password = random.randint(1000,9999)
+        password = random.randint(100000, 999999)
         if line_crud.exists_password(password) == True:
             return password_gen()
         return password
