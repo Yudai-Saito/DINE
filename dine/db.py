@@ -1,6 +1,7 @@
 #coding : utf-8
 import os
 import datetime
+from contextlib import contextmanager
 
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime
 from sqlalchemy.ext.declarative import declarative_base
@@ -37,32 +38,34 @@ class ServerInfo(Base):
     voice_notice = Column(Boolean, default=True)
 
 class LineCrud:
-    def __init__(self):
-        self.__Session = sessionmaker(bind=engine)
-        self.__session = self.__Session() 
-
-    def add_following_to_password(self, line_id, password):
-        self.__session.add(Password(line_id=line_id, password=password, register_time=datetime.datetime.now()))
-        self.__session.commit()
+    def add_following_to_password(self, session, line_id, password):
+        session.add(Password(line_id=line_id, password=password, register_time=datetime.datetime.now()))
     
-    def exists_password(self, password):
-        return self.__session.query(self.__session.query(Password).filter(Password.password == password).exists()).scalar()
+    def exists_password(self, session, password):
+        return session.query(session.query(Password).filter(Password.password == password).exists()).scalar()
 
-    def exists_line_user(self, line_id):
-        return self.__session.query(self.__session.query(Password).filter(Password.line_id == line_id).exists()).scalar()
+    def exists_line_user(self, session, line_id):
+        return session.query(session.query(Password).filter(Password.line_id == line_id).exists()).scalar()
 
 class ScheduleManager():
-    def __init__(self):
-        self.__Session = sessionmaker(bind=engine)
-        self.__session = self.__Session() 
-
-    def time_over_user(self):
+    def time_over_user(self, session):
         nowtime = datetime.datetime.now()
+        session.query(Password).filter(Password.register_time < nowtime - datetime.timedelta(minutes=5)).delete()
+
+class SessionManager:
+    @contextmanager
+    def session_create(self):
+        engine.dispose()
+        Session = sessionmaker(bind=engine)
+        session = Session()
         try:
-            self.__session.query(Password).filter(Password.register_time < nowtime - datetime.timedelta(minutes=5)).delete()
-            self.__session.commit()
+            yield session
+            session.commit()
         except:
-            pass
+            session.rollback()
+            raise
+        finally:
+            session.close()
 
 def create_db():
     Base.metadata.create_all(engine)
