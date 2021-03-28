@@ -9,6 +9,7 @@ line-bot-sdk = "*"
 responder = "*"
 sqlalchemy = "*"
 psycopg2 = "*"
+schedule = "*"
 
 [dev-packages]
 
