@@ -8,7 +8,8 @@ import responder
 
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, FollowEvent, TextMessage, TextSendMessage, FlexSendMessage
+from linebot.models import (MessageEvent, FollowEvent, TextMessage, TextSendMessage, FlexSendMessage,
+                            RichMenu, RichMenuSize, RichMenuArea, RichMenuBounds, PostbackAction)
 
 from db import LineCrud
 from flex_message import follow_flex_message
@@ -62,5 +63,31 @@ class Line():
             return password_gen()
         return password
 
+    def __create_richmenu(self):
+        rich_menu_to_create = RichMenu(
+            size = RichMenuSize(width=800, height=270),
+            selected = True,
+            name = "dine_richmenu",
+            chat_bar_text = "BOT設定はここ！",
+            areas=[
+                RichMenuArea(
+                    bounds=RichMenuBounds(x=0, y=0, width=400, height=270),
+                    action=PostbackAction(data="select_server", display_text="サーバーを選びたいよ！")
+                ),
+                RichMenuArea(
+                    bounds=RichMenuBounds(x=400, y=0, width=800, height=270),
+                    action=PostbackAction(data="register_server", display_text="サーバに登録したいよ！")
+                )
+            ]
+        )
+        
+        richMenuId = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_create)       
+
+        with open("richmenu.png", 'rb') as f:
+            line_bot_api.set_rich_menu_image(richMenuId, "image/png", f)           
+
+        line_bot_api.set_default_rich_menu(richMenuId)    
+
     def begin(self):
+        self.__create_richmenu()
         api.run(address="0.0.0.0", port=8000, debug=True, log_config=None)
