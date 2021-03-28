@@ -6,7 +6,7 @@ from multiprocessing import Process
 
 from discord_bot import Dine
 from line_bot import Line
-from db import create_db, ScheduleManager
+from db import create_db, ScheduleManager, SessionManager
 
 def line_run():
     linebot = Line()
@@ -17,8 +17,12 @@ def discord_run():
     bot.begin()
 
 def user_delete():
+    session_mng = SessionManager()
+    
     db_schedule = ScheduleManager()
-    db_schedule.time_over_user()
+
+    with session_mng.session_create() as session:
+        db_schedule.time_over_user(session)
 
 def schedule_function():
     schedule.every(1).minutes.do(user_delete)
