@@ -60,8 +60,13 @@ def post_back(event):
 
             line_crud.add_following_to_password(event.source.user_id, password)
 
-            line_bot_api.push_message(event.source.user_id, FlexSendMessage(alt_text="登録メッセージ", contents=follow_flex_message))
-            line_bot_api.push_message(event.source.user_id, TextSendMessage("上記のコマンドを登録したいサーバーのDiscordチャットに入力してください！"))
+            line_bot_api.push_message(
+                            event.source.user_id, 
+                            [
+                                FlexSendMessage(alt_text="登録メッセージ", contents=follow_flex_message),
+                                TextSendMessage("上記のコマンドを登録したいサーバーのDiscordチャットに入力してください！")
+                            ]
+                        )
 
 class Line():
     @staticmethod
