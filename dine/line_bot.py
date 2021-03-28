@@ -51,14 +51,17 @@ def following(event):
 @handler.add(PostbackEvent)
 def post_back(event):
     if event.postback.data == "register_server":
-        password = Line.password_gen()
+        if line_crud.exists_line_user(event.source.user_id) == True:
+            line_bot_api.push_message(event.source.user_id, TextSendMessage("既に登録用コマンドを発行済です！"))
+        else:
+            password = Line.password_gen()
 
-        follow_flex_message["header"]["contents"][0]["text"] = "!dine add " + str(password)
+            follow_flex_message["header"]["contents"][0]["text"] = "!dine add " + str(password)
 
-        line_crud.add_following_to_password(event.source.user_id, password)
+            line_crud.add_following_to_password(event.source.user_id, password)
 
-        line_bot_api.push_message(event.source.user_id, FlexSendMessage(alt_text="登録メッセージ", contents=follow_flex_message))
-        line_bot_api.push_message(event.source.user_id, TextSendMessage("上記のコマンドを登録したいサーバーのDiscordチャットに入力してください！"))
+            line_bot_api.push_message(event.source.user_id, FlexSendMessage(alt_text="登録メッセージ", contents=follow_flex_message))
+            line_bot_api.push_message(event.source.user_id, TextSendMessage("上記のコマンドを登録したいサーバーのDiscordチャットに入力してください！"))
 
 class Line():
     @staticmethod
