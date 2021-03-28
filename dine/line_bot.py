@@ -8,7 +8,7 @@ import responder
 
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import (MessageEvent, FollowEvent, TextMessage, TextSendMessage, FlexSendMessage,
+from linebot.models import (MessageEvent, FollowEvent, PostbackEvent, TextMessage, TextSendMessage, FlexSendMessage,
                             RichMenu, RichMenuSize, RichMenuArea, RichMenuBounds, PostbackAction)
 
 from db import LineCrud
@@ -46,14 +46,19 @@ def handle_message(event):
 
 @handler.add(FollowEvent)
 def following(event):
-    password = Line.password_gen()
+    pass
 
-    follow_flex_message["header"]["contents"][0]["text"] = "!dine add " + str(password)
+@handler.add(PostbackEvent)
+def post_back(event):
+    if event.postback.data == "register_server":
+        password = Line.password_gen()
 
-    line_crud.add_following_to_password(event.source.user_id, password)
+        follow_flex_message["header"]["contents"][0]["text"] = "!dine add " + str(password)
 
-    line_bot_api.push_message(event.source.user_id, FlexSendMessage(alt_text="登録メッセージ", contents=follow_flex_message))
-    line_bot_api.push_message(event.source.user_id, TextSendMessage("上記のコマンドを登録したいサーバーのDiscordチャットに入力してください！"))
+        line_crud.add_following_to_password(event.source.user_id, password)
+
+        line_bot_api.push_message(event.source.user_id, FlexSendMessage(alt_text="登録メッセージ", contents=follow_flex_message))
+        line_bot_api.push_message(event.source.user_id, TextSendMessage("上記のコマンドを登録したいサーバーのDiscordチャットに入力してください！"))
 
 class Line():
     @staticmethod
