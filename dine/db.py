@@ -1,6 +1,8 @@
 #coding : utf-8
 import os
-from sqlalchemy import create_engine, Column, Integer, String, Boolean
+import datetime
+
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -19,6 +21,7 @@ class Password(Base):
     __tablename__ = "password"
     line_id = Column(String, primary_key=True)
     password = Column(Integer, unique=True)
+    register_time = Column(DateTime)
 
 class DiscordServer(Base):
 	__tablename__ = "dicord_server"
@@ -39,7 +42,7 @@ class LineCrud:
         self.__session = self.__Session() 
 
     def add_following_to_password(self, line_id, password):
-        self.__session.add(Password(line_id=line_id, password=password))
+        self.__session.add(Password(line_id=line_id, password=password, register_time=datetime.datetime.now()))
         self.__session.commit()
     
     def exists_password(self, password):
