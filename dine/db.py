@@ -51,5 +51,18 @@ class LineCrud:
     def exists_line_user(self, line_id):
         return self.__session.query(self.__session.query(Password).filter(Password.line_id == line_id).exists()).scalar()
 
+class ScheduleManager():
+    def __init__(self):
+        self.__Session = sessionmaker(bind=engine)
+        self.__session = self.__Session() 
+
+    def time_over_user(self):
+        nowtime = datetime.datetime.now()
+        try:
+            self.__session.query(Password).filter(Password.register_time < nowtime - datetime.timedelta(minutes=5)).delete()
+            self.__session.commit()
+        except:
+            pass
+
 def create_db():
     Base.metadata.create_all(engine)
