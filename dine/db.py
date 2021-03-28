@@ -45,5 +45,8 @@ class LineCrud:
     def exists_password(self, password):
         return self.__session.query(self.__session.query(Password).filter(Password.password == password).exists()).scalar()
 
+    def exists_line_user(self, line_id):
+        return self.__session.query(self.__session.query(Password).filter(Password.line_id == line_id).exists()).scalar()
+
 def create_db():
     Base.metadata.create_all(engine)
