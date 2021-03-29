@@ -48,6 +48,11 @@ class LineCrud:
     def exists_line_user(self, session, line_id):
         return session.query(session.query(Password).filter(Password.line_id == line_id).exists()).scalar()
 
+    def del_userinfo_block(self, session, line_id):
+        session.query(Users).filter(Users.line_id == line_id).delete()
+        session.query(Password).filter(Password.line_id == line_id).delete()
+        session.query(ServerInfo).filter(ServerInfo.line_id == line_id).delete()
+
 class DiscordCrud:
     def add_join_server(self, session, server_id):
         session.add(DiscordServer(server_id=server_id))
