@@ -31,7 +31,8 @@ class DiscordServer(Base):
 
 class ServerInfo(Base):
     __tablename__ = "server_info"
-    server_id = Column(String, primary_key=True)
+    no = Column(Integer, autoincrement=True, primary_key=True)
+    server_id = Column(String)
     line_id = Column(String)
     auth_flag = Column(Boolean, default=False)
     text_notice = Column(Boolean, default=True)
