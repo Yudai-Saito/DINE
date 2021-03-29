@@ -55,7 +55,6 @@ class ScheduleManager():
 class SessionManager:
     @contextmanager
     def session_create(self):
-        engine.dispose()
         Session = sessionmaker(bind=engine)
         session = Session()
         try:
@@ -66,6 +65,8 @@ class SessionManager:
             raise
         finally:
             session.close()
+            engine.dispose()
 
 def create_db():
     Base.metadata.create_all(engine)
+    engine.dispose()
