@@ -8,7 +8,7 @@ import responder
 
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import (MessageEvent, FollowEvent, PostbackEvent, TextMessage, TextSendMessage, FlexSendMessage,
+from linebot.models import (MessageEvent, FollowEvent, PostbackEvent, UnfollowEvent, TextMessage, TextSendMessage, FlexSendMessage,
                             RichMenu, RichMenuSize, RichMenuArea, RichMenuBounds, PostbackAction)
 
 from db import LineCrud, SessionManager
@@ -48,6 +48,11 @@ def handle_message(event):
 @handler.add(FollowEvent)
 def following(event):
     pass
+
+@handler.add(UnfollowEvent)
+def unfollow(event):
+    with session_mng.session_create() as session:
+        line_crud.del_userinfo_block(session, event.source.user_id)
 
 @handler.add(PostbackEvent)
 def post_back(event):
