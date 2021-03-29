@@ -48,6 +48,10 @@ class LineCrud:
     def exists_line_user(self, session, line_id):
         return session.query(session.query(Password).filter(Password.line_id == line_id).exists()).scalar()
 
+class DiscordCrud:
+    def add_join_server(self, session, server_id):
+        session.add(DiscordServer(server_id=server_id))
+
 class ScheduleManager():
     def time_over_user(self, session):
         nowtime = datetime.datetime.now()
