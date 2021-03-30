@@ -9,7 +9,9 @@ from db import DiscordCrud, SessionManager
 class Dine(commands.Bot):
     def __init__(self):
         super().__init__("!")
-        
+
+        self.load_extension("cogs")
+
         self.discord_crud = DiscordCrud()
         self.session_mng = SessionManager()
     
