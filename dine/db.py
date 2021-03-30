@@ -57,6 +57,12 @@ class DiscordCrud:
     def add_join_server(self, session, server_id):
         session.add(DiscordServer(server_id=server_id))
 
+    def exists_password(self, session, password):
+        return session.query(session.query(Password).filter(Password.password == password).exists()).scalar()
+
+    def register_user(self, session, password):
+        return session.query(Password.line_id).filter(Password.password == password).scalar()
+
 class ScheduleManager():
     def time_over_user(self, session):
         nowtime = datetime.datetime.now()
