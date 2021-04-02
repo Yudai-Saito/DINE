@@ -57,6 +57,7 @@ class LineCrud:
 
     def accept_user(self, session, line_id):
         session.add(Users(line_id=line_id, discord_id=session.query(Password.discord_id).filter(Password.line_id == line_id).scalar()))
+        session.add(ServerInfo(line_id=line_id, server_id=session.query(Password.server_id).filter(Password.line_id == line_id).scalar()))
         session.query(Password).filter(Password.line_id == line_id).delete()
 
 class DiscordCrud:
