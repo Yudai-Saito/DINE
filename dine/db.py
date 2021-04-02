@@ -22,6 +22,7 @@ class Password(Base):
     __tablename__ = "password"
     line_id = Column(String, primary_key=True)
     discord_id = Column(String, unique=True)
+    server_id = Column(String)
     password = Column(Integer, unique=True)
     register_time = Column(DateTime)
 
@@ -68,8 +69,8 @@ class DiscordCrud:
     def register_user(self, session, password):
         return session.query(Password.line_id).filter(Password.password == password).scalar()
     
-    def add_register_to_password(self, session, password, discord_id):
-        session.query(session.query(Password).filter(Password.password == password).update({Password.discord_id : discord_id}))
+    def add_register_to_password(self, session, password, discord_id, server_id):
+        session.query(session.query(Password).filter(Password.password == password).update({Password.discord_id : discord_id, Password.server_id : server_id}))
 
 class ScheduleManager():
     def time_over_user(self, session):
