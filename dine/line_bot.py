@@ -76,6 +76,13 @@ def post_back(event):
                                 ]
                             )
 
+    elif event.postback.data == "register_accept":
+        with session_mng.session_create() as session:
+            line_crud.accept_user(session, event.source.user_id)
+    
+    elif event.postback.data == "register_deny":
+        pass
+
 class Line():
     @staticmethod
     def password_gen():
