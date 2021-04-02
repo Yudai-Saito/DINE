@@ -21,6 +21,7 @@ class Users(Base):
 class Password(Base):
     __tablename__ = "password"
     line_id = Column(String, primary_key=True)
+    discord_id = Column(String, unique=True)
     password = Column(Integer, unique=True)
     register_time = Column(DateTime)
 
@@ -53,6 +54,10 @@ class LineCrud:
         session.query(Password).filter(Password.line_id == line_id).delete()
         session.query(ServerInfo).filter(ServerInfo.line_id == line_id).delete()
 
+    def accept_user(self, session, line_id):
+        session.add(Users(line_id=line_id, discord_id=session.query(Password.discord_id).filter(Password.line_id == line_id).scalar()))
+        session.query(Password).filter(Password.line_id == line_id).delete()
+
 class DiscordCrud:
     def add_join_server(self, session, server_id):
         session.add(DiscordServer(server_id=server_id))
@@ -62,6 +67,9 @@ class DiscordCrud:
 
     def register_user(self, session, password):
         return session.query(Password.line_id).filter(Password.password == password).scalar()
+    
+    def add_register_to_password(self, session, password, discord_id):
+        session.query(session.query(Password).filter(Password.password == password).update({Password.discord_id : discord_id}))
 
 class ScheduleManager():
     def time_over_user(self, session):
