@@ -25,7 +25,7 @@ class DineCog(commands.Cog):
                 ctx.send("認証が完了しました！LINEで登録を完了させましょう！")
                 
                 with self.session_mng.session_create() as session:
-                    self.discord_crud.add_register_to_password(session, password, ctx.author.id)
+                    self.discord_crud.add_register_to_password(session, password, ctx.author.id, ctx.guild.id)
 
                 with self.session_mng.session_create() as session:   
                     line_id = self.discord_crud.register_user(session, password)
