@@ -38,7 +38,7 @@ class DineCog(commands.Cog):
                                 ]
                             )
             else:
-                await ctx.send("入力されたパスワードは存在しません！")
+                await ctx.send("入力されたパスワードは使用済みか存在しません！")
 
 def setup(bot):
     return bot.add_cog(DineCog(bot))
