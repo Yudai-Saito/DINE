@@ -66,7 +66,7 @@ class DiscordCrud:
         session.add(DiscordServer(server_id=server_id))
 
     def exists_password(self, session, password):
-        return session.query(session.query(Password).filter(Password.password == password).exists()).scalar()
+        return session.query(session.query(Password).filter(Password.password == password, Password.pass_history == False).exists()).scalar()
 
     def register_user(self, session, password):
         return session.query(Password.line_id).filter(Password.password == password).scalar()
