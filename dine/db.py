@@ -72,7 +72,8 @@ class DiscordCrud:
         return session.query(Password.line_id).filter(Password.password == password).scalar()
     
     def add_register_to_password(self, session, password, discord_id, server_id):
-        session.query(session.query(Password).filter(Password.password == password).update({Password.discord_id : discord_id, Password.server_id : server_id}))
+        session.query(session.query(Password).filter(Password.password == password).\
+                    update({Password.discord_id : discord_id, Password.server_id : server_id, Password.pass_history : True}))
 
 class ScheduleManager():
     def time_over_user(self, session):
