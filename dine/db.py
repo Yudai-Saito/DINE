@@ -25,6 +25,7 @@ class Password(Base):
     server_id = Column(String)
     password = Column(Integer, unique=True)
     register_time = Column(DateTime)
+    pass_history = Column(Boolean, default=False)
 
 class DiscordServer(Base):
 	__tablename__ = "dicord_server"
