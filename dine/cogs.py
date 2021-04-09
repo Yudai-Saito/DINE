@@ -32,10 +32,12 @@ class DineCog(commands.Cog):
                         with self.session_mng.session_create() as session:   
                             line_id = self.discord_crud.register_user(session, password)
 
-                        register_accept["header"]["contents"][0]["text"] = "\"{}\"".format(ctx.guild.name)
+                        flex_message = register_accept
+
+                        flex_message["header"]["contents"][0]["text"] = "\"{}\"".format(ctx.guild.name)
 
                         line_bot_api.push_message(line_id, [
-                                            FlexSendMessage(alt_text="登録メッセージ", contents=register_accept),
+                                            FlexSendMessage(alt_text="登録メッセージ", contents=flex_message),
                                             TextSendMessage("登録リンクは5分間有効となります！\n時間が過ぎてしまったら再度パスワードを発行してください！")
                                         ]
                                     )

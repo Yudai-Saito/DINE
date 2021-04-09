@@ -12,7 +12,7 @@ from linebot.models import (MessageEvent, FollowEvent, PostbackEvent, UnfollowEv
                             RichMenu, RichMenuSize, RichMenuArea, RichMenuBounds, PostbackAction)
 
 from db import LineCrud, SessionManager
-from flex_message import follow_flex_message
+from flex_message import password_generate
 
 api = responder.API()
 
@@ -63,7 +63,9 @@ def post_back(event):
             else:
                 password = Line.password_gen()
 
-                follow_flex_message["header"]["contents"][0]["text"] = "!dine add " + str(password)
+                flex_message = password_generate
+
+                flex_message["header"]["contents"][0]["text"] = "!dine add " + str(password)
 
                 with session_mng.session_create() as session:
                     line_crud.add_following_to_password(session, event.source.user_id, password)
@@ -71,7 +73,7 @@ def post_back(event):
                 line_bot_api.push_message(
                                 event.source.user_id, 
                                 [
-                                    FlexSendMessage(alt_text="登録メッセージ", contents=follow_flex_message),
+                                    FlexSendMessage(alt_text="登録メッセージ", contents=flex_message),
                                     TextSendMessage("上記のコマンドを登録したいサーバーのDiscordチャットに入力してください！")
                                 ]
                             )
