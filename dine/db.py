@@ -33,7 +33,6 @@ class ServerInfo(Base):
     server_id = Column(String)
     line_id = Column(String)
     discord_id = Column(String)
-    auth_flag = Column(Boolean, default=False)
     text_notice = Column(Boolean, default=True)
     voice_notice = Column(Boolean, default=True)
 
