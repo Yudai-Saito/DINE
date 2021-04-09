@@ -37,6 +37,7 @@ class ServerInfo(Base):
     no = Column(Integer, autoincrement=True, primary_key=True)
     server_id = Column(String)
     line_id = Column(String)
+    discord_id = Column(String)
     auth_flag = Column(Boolean, default=False)
     text_notice = Column(Boolean, default=True)
     voice_notice = Column(Boolean, default=True)
@@ -58,12 +59,16 @@ class LineCrud:
 
     def accept_user(self, session, line_id):
         session.add(Users(line_id=line_id, discord_id=session.query(Password.discord_id).filter(Password.line_id == line_id).scalar()))
-        session.add(ServerInfo(line_id=line_id, server_id=session.query(Password.server_id).filter(Password.line_id == line_id).scalar()))
+        session.add(ServerInfo(line_id=line_id, discord_id=session.query(Password.discord_id).filter(Password.line_id == line_id).scalar(),\
+                                server_id=session.query(Password.server_id).filter(Password.line_id == line_id).scalar()))
         session.query(Password).filter(Password.line_id == line_id).delete()
 
 class DiscordCrud:
     def add_join_server(self, session, server_id):
         session.add(DiscordServer(server_id=server_id))
+    
+    def exists_user(self, session, server_id, discord_id):
+        return session.query(session.query(ServerInfo).filter(ServerInfo.server_id == str(server_id), ServerInfo.discord_id == str(discord_id)).exists()).scalar()
 
     def exists_password(self, session, password):
         return session.query(session.query(Password).filter(Password.password == password, Password.pass_history == False).exists()).scalar()
