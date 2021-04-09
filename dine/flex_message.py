@@ -1,4 +1,4 @@
-follow_flex_message = {
+password_generate = {
     "type": "bubble",
     "direction": "ltr",
     "header": {
