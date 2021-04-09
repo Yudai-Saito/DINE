@@ -81,9 +81,11 @@ def post_back(event):
     elif event.postback.data == "register_accept":
         with session_mng.session_create() as session:
             line_crud.accept_user(session, event.source.user_id)
+
+        line_bot_api.push_message(event.source.user_id, TextSendMessage("サーバーへの登録が完了しました！"))
     
     elif event.postback.data == "register_deny":
-        pass
+        line_bot_api.push_message(event.source.user_id, TextSendMessage("サーバーへの登録を拒否しました。\n再度登録する場合はパスワードを再生成してください。"))
 
 class Line():
     @staticmethod
