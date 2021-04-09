@@ -13,11 +13,6 @@ engine = create_engine("{}://{}:{}@{}:{}/{}"\
 
 Base = declarative_base()
 
-class Users(Base):
-    __tablename__ = "users"
-    line_id = Column(String, primary_key=True)
-    discord_id = Column(String)
-
 class Password(Base):
     __tablename__ = "password"
     line_id = Column(String, primary_key=True)
@@ -53,12 +48,10 @@ class LineCrud:
         return session.query(session.query(Password).filter(Password.line_id == line_id).exists()).scalar()
 
     def del_userinfo_block(self, session, line_id):
-        session.query(Users).filter(Users.line_id == line_id).delete()
         session.query(Password).filter(Password.line_id == line_id).delete()
         session.query(ServerInfo).filter(ServerInfo.line_id == line_id).delete()
 
     def accept_user(self, session, line_id):
-        session.add(Users(line_id=line_id, discord_id=session.query(Password.discord_id).filter(Password.line_id == line_id).scalar()))
         session.add(ServerInfo(line_id=line_id, discord_id=session.query(Password.discord_id).filter(Password.line_id == line_id).scalar(),\
                                 server_id=session.query(Password.server_id).filter(Password.line_id == line_id).scalar()))
         session.query(Password).filter(Password.line_id == line_id).delete()
