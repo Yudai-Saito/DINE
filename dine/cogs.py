@@ -18,6 +18,14 @@ class DineCog(commands.Cog):
         pass
 
     @dine.command()
+    async def prefix(self, ctx, prefix):
+        if len(prefix) == 1:
+            with self.session_mng.session_create() as session:
+                self.discord_crud.set_prefix(session, ctx.guild.id, prefix)
+        
+        await ctx.send("prefixを変更しました！")
+
+    @dine.command()
     async def add(self, ctx, password):
         with self.session_mng.session_create() as session:
             if self.discord_crud.exists_user(session, ctx.guild.id, ctx.author.id) == False:
