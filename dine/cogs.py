@@ -13,6 +13,13 @@ class DineCog(commands.Cog):
         self.discord_crud = DiscordCrud()
         self.session_mng = SessionManager()
 
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if self.bot.user in message.mentions:
+            with self.session_mng.session_create() as session:
+                prefix = self.discord_crud.get_prefix(session, message.guild.id)
+            await message.channel.send("サーバーのprefixは {} です！".format(prefix))
+
     @commands.group()
     async def dine(self, ctx):
         pass
