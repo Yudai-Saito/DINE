@@ -22,8 +22,9 @@ class DineCog(commands.Cog):
         if len(prefix) == 1:
             with self.session_mng.session_create() as session:
                 self.discord_crud.set_prefix(session, ctx.guild.id, prefix)
-        
-        await ctx.send("prefixを変更しました！")
+            await ctx.send("prefixを変更しました！")
+        else:
+            await ctx.send("prefixは1文字で設定してください！")
 
     @dine.command()
     async def add(self, ctx, password):
