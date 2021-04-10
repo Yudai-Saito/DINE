@@ -8,12 +8,16 @@ from db import DiscordCrud, SessionManager
 
 class Dine(commands.Bot):
     def __init__(self):
-        super().__init__("!")
+        super().__init__(self.server_prefix)
 
         self.load_extension("cogs")
 
         self.discord_crud = DiscordCrud()
         self.session_mng = SessionManager()
+
+    async def server_prefix(self, bot, message):
+        with self.session_mng.session_create() as session:
+            return self.discord_crud.get_prefix(session, message.guild.id)
     
     async def on_ready(self):
         await self.change_presence(status=discord.Status.idle, activity=discord.Game("dine!"))
