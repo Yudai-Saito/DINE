@@ -98,18 +98,26 @@ class Line():
 
     def __create_richmenu(self):
         rich_menu_to_create = RichMenu(
-            size = RichMenuSize(width=800, height=270),
+            size = RichMenuSize(width=2500, height=1686),
             selected = True,
             name = "dine_richmenu",
             chat_bar_text = "BOT設定はここ！",
             areas=[
                 RichMenuArea(
-                    bounds=RichMenuBounds(x=0, y=0, width=400, height=270),
-                    action=PostbackAction(data="select_server", display_text="サーバーを選びたいよ！")
+                    bounds=RichMenuBounds(x=0, y=0, width=1250, height=843),
+                    action=PostbackAction(data="delete_server", display_text="サーバーを消したいよ！")
                 ),
                 RichMenuArea(
-                    bounds=RichMenuBounds(x=400, y=0, width=800, height=270),
-                    action=PostbackAction(data="register_server", display_text="サーバに登録したいよ！")
+                    bounds=RichMenuBounds(x=0, y=843, width=1250, height=1686),
+                    action=PostbackAction(data="setting_server", display_text="サーバーを設定したいよ！")
+                ),
+                RichMenuArea(
+                    bounds=RichMenuBounds(x=1250, y=0, width=2500, height=843),
+                    action=PostbackAction(data="select_server", display_text="サーバを登録したいよ！")
+                ),
+                RichMenuArea(
+                    bounds=RichMenuBounds(x=1250, y=843, width=2500, height=1686),
+                    action=PostbackAction(data="register_server", display_text="サーバーを選びたいよ！")
                 )
             ]
         )
