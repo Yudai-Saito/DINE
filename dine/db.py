@@ -23,9 +23,10 @@ class Password(Base):
     pass_history = Column(Boolean, default=False)
 
 class DiscordServer(Base):
-	__tablename__ = "dicord_server"
-	server_id = Column(String, primary_key=True)
-	channel_id = Column(String)
+    __tablename__ = "dicord_server"
+    server_id = Column(String, primary_key=True)
+    channel_id = Column(String)
+    prefix = Column(String, default="!")
 
 class ServerInfo(Base):
     __tablename__ = "server_info"
@@ -71,6 +72,12 @@ class DiscordCrud:
     def add_register_to_password(self, session, password, discord_id, server_id):
         session.query(session.query(Password).filter(Password.password == password).\
                     update({Password.discord_id : discord_id, Password.server_id : server_id, Password.pass_history : True}))
+
+    def set_prefix(self, session, server_id, prefix):
+        session.query(session.query(DiscordServer).filter(DiscordServer.server_id == str(server_id)).update({DiscordServer.prefix : prefix}))
+
+    def get_prefix(self, session, server_id):
+        return session.query(DiscordServer.prefix).filter(DiscordServer.server_id == str(server_id)).scalar()
 
 class ScheduleManager():
     def time_over_user(self, session):
