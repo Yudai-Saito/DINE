@@ -78,6 +78,15 @@ def post_back(event):
                                 ]
                             )
 
+    elif event.postback.data == "delete_server":
+        pass
+
+    elif event.postback.data == "setting_server":
+        pass
+
+    elif event.postback.data == "select_server":
+        pass
+    
     elif event.postback.data == "register_accept":
         with session_mng.session_create() as session:
             line_crud.accept_user(session, event.source.user_id)
