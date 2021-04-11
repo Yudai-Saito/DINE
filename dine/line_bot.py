@@ -124,7 +124,7 @@ class Line():
         
         richMenuId = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_create)       
 
-        with open("richmenu.png", 'rb') as f:
+        with open("picture/richmenu.png", 'rb') as f:
             line_bot_api.set_rich_menu_image(richMenuId, "image/png", f)           
 
         line_bot_api.set_default_rich_menu(richMenuId)    
