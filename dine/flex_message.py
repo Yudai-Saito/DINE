@@ -71,3 +71,132 @@ register_accept = {
     ]
   }
 }
+
+delete_server = {
+  "type": "carousel",
+  "contents": [
+    {
+      "type": "bubble",
+      "size": "nano",
+      "header": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "image",
+            "url": "icon_url",
+            "offsetTop": "none",
+            "offsetBottom": "none",
+            "offsetStart": "none",
+            "offsetEnd": "none"
+          }
+        ],
+        "paddingBottom": "none",
+        "backgroundColor": "#AFEEEE",
+        "paddingTop": "none"
+      },
+      "body": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "text": "server_name",
+            "align": "center",
+            "position": "relative",
+            "weight": "bold",
+            "size": "md",
+            "margin": "xs"
+          }
+        ],
+        "backgroundColor": "#AFEEEE",
+        "paddingTop": "none"
+      },
+      "footer": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "button",
+            "action": {
+              "type": "postback",
+              "label": "解除する",
+              "data": "server_id"
+            },
+            "offsetTop": "none",
+            "offsetBottom": "none"
+          }
+        ],
+        "paddingTop": "none",
+        "paddingBottom": "none"
+      },
+      "styles": {
+        "footer": {
+          "separator": False
+        }
+      }
+    }
+  ]
+}
+
+delete_server_contents =     {
+      "type": "bubble",
+      "size": "nano",
+      "header": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "image",
+            "url": "icon_url",
+            "offsetTop": "none",
+            "offsetBottom": "none",
+            "offsetStart": "none",
+            "offsetEnd": "none"
+          }
+        ],
+        "paddingBottom": "none",
+        "backgroundColor": "#AFEEEE",
+        "paddingTop": "none"
+      },
+      "body": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "text": "server_name",
+            "align": "center",
+            "position": "relative",
+            "weight": "bold",
+            "size": "md",
+            "margin": "xs"
+          }
+        ],
+        "backgroundColor": "#AFEEEE",
+        "paddingTop": "none"
+      },
+      "footer": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "button",
+            "action": {
+              "type": "postback",
+              "label": "解除する",
+              "data": "server_id"
+            },
+            "offsetTop": "none",
+            "offsetBottom": "none"
+          }
+        ],
+        "paddingTop": "none",
+        "paddingBottom": "none"
+      },
+      "styles": {
+        "footer": {
+          "separator": False
+        }
+      }
+    }
