@@ -78,22 +78,20 @@ delete_server = {
     {
       "type": "bubble",
       "size": "nano",
-      "header": {
+      "hero": {
         "type": "box",
         "layout": "vertical",
         "contents": [
           {
             "type": "image",
-            "url": "icon_url",
-            "offsetTop": "none",
-            "offsetBottom": "none",
-            "offsetStart": "none",
-            "offsetEnd": "none"
+            "url": "https://example.com/",
+            "size": "full",
+            "margin": "sm"
           }
         ],
         "paddingBottom": "none",
-        "backgroundColor": "#AFEEEE",
-        "paddingTop": "none"
+        "paddingTop": "none",
+        "backgroundColor": "#AFEEEE"
       },
       "body": {
         "type": "box",
@@ -106,11 +104,11 @@ delete_server = {
             "position": "relative",
             "weight": "bold",
             "size": "md",
-            "margin": "xs"
+            "margin": "md"
           }
         ],
-        "backgroundColor": "#AFEEEE",
-        "paddingTop": "none"
+        "paddingTop": "none",
+        "backgroundColor": "#AFEEEE"
       },
       "footer": {
         "type": "box",
@@ -122,9 +120,7 @@ delete_server = {
               "type": "postback",
               "label": "解除する",
               "data": "server_id"
-            },
-            "offsetTop": "none",
-            "offsetBottom": "none"
+            }
           }
         ],
         "paddingTop": "none",
@@ -139,25 +135,23 @@ delete_server = {
   ]
 }
 
-delete_server_contents =     {
+delete_server_contents = {
       "type": "bubble",
       "size": "nano",
-      "header": {
+      "hero": {
         "type": "box",
         "layout": "vertical",
         "contents": [
           {
             "type": "image",
-            "url": "icon_url",
-            "offsetTop": "none",
-            "offsetBottom": "none",
-            "offsetStart": "none",
-            "offsetEnd": "none"
+            "url": "https://example.com/",
+            "size": "full",
+            "margin": "sm"
           }
         ],
         "paddingBottom": "none",
-        "backgroundColor": "#AFEEEE",
-        "paddingTop": "none"
+        "paddingTop": "none",
+        "backgroundColor": "#AFEEEE"
       },
       "body": {
         "type": "box",
@@ -170,11 +164,11 @@ delete_server_contents =     {
             "position": "relative",
             "weight": "bold",
             "size": "md",
-            "margin": "xs"
+            "margin": "md"
           }
         ],
-        "backgroundColor": "#AFEEEE",
-        "paddingTop": "none"
+        "paddingTop": "none",
+        "backgroundColor": "#AFEEEE"
       },
       "footer": {
         "type": "box",
@@ -186,9 +180,7 @@ delete_server_contents =     {
               "type": "postback",
               "label": "解除する",
               "data": "server_id"
-            },
-            "offsetTop": "none",
-            "offsetBottom": "none"
+            }
           }
         ],
         "paddingTop": "none",
