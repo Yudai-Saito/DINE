@@ -157,11 +157,11 @@ class Line():
                 ),
                 RichMenuArea(
                     bounds=RichMenuBounds(x=1250, y=0, width=2500, height=843),
-                    action=PostbackAction(data="select_server", display_text="サーバを登録したいよ！")
+                    action=PostbackAction(data="register_server", display_text="サーバを登録したいよ！")
                 ),
                 RichMenuArea(
                     bounds=RichMenuBounds(x=1250, y=843, width=2500, height=1686),
-                    action=PostbackAction(data="register_server", display_text="サーバーを選びたいよ！")
+                    action=PostbackAction(data="select_server", display_text="サーバーを選びたいよ！")
                 )
             ]
         )
