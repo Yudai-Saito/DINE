@@ -75,69 +75,12 @@ register_accept = {
 delete_server = {
   "type": "carousel",
   "contents": [
-    {
-      "type": "bubble",
-      "size": "nano",
-      "hero": {
-        "type": "box",
-        "layout": "vertical",
-        "contents": [
-          {
-            "type": "image",
-            "url": "https://example.com/",
-            "size": "full",
-            "margin": "sm"
-          }
-        ],
-        "paddingBottom": "none",
-        "paddingTop": "none",
-        "backgroundColor": "#AFEEEE"
-      },
-      "body": {
-        "type": "box",
-        "layout": "vertical",
-        "contents": [
-          {
-            "type": "text",
-            "text": "server_name",
-            "align": "center",
-            "position": "relative",
-            "weight": "bold",
-            "size": "md",
-            "margin": "md"
-          }
-        ],
-        "paddingTop": "none",
-        "backgroundColor": "#AFEEEE"
-      },
-      "footer": {
-        "type": "box",
-        "layout": "vertical",
-        "contents": [
-          {
-            "type": "button",
-            "action": {
-              "type": "postback",
-              "label": "解除する",
-              "data": "server_id"
-            }
-          }
-        ],
-        "paddingTop": "none",
-        "paddingBottom": "none"
-      },
-      "styles": {
-        "footer": {
-          "separator": False
-        }
-      }
-    }
   ]
 }
 
 delete_server_contents = {
       "type": "bubble",
-      "size": "nano",
+      "size": "micro",
       "hero": {
         "type": "box",
         "layout": "vertical",
@@ -179,7 +122,7 @@ delete_server_contents = {
             "action": {
               "type": "postback",
               "label": "解除する",
-              "data": "server_id"
+              "data": "delete,server_id"
             }
           }
         ],
