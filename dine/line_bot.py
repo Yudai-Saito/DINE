@@ -4,7 +4,9 @@ import os
 import json
 import random
 import logging
+import requests
 import responder
+import copy
 
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -12,7 +14,7 @@ from linebot.models import (MessageEvent, FollowEvent, PostbackEvent, UnfollowEv
                             RichMenu, RichMenuSize, RichMenuArea, RichMenuBounds, PostbackAction)
 
 from db import LineCrud, SessionManager
-from flex_message import password_generate
+from flex_message import password_generate, delete_server, delete_server_contents
 
 api = responder.API()
 
@@ -79,7 +81,29 @@ def post_back(event):
                             )
 
     elif event.postback.data == "delete_server":
-        pass
+        BASE_URL = "https://discord.com/api/guilds/"
+        HADER = {"Authorization":"Bot {}".format(os.environ["DISCORD_TOKEN"])}
+
+        with session_mng.session_create() as session:
+            servers = line_crud.get_server_id(session, event.source.user_id)
+
+        if len(servers) > 0:
+            delete_flex_message = copy.deepcopy(delete_server)
+            delete_flex_message_contents = copy.deepcopy(delete_server_contents)
+
+            for server in servers:
+                res = requests.get(BASE_URL+server[0], headers=HADER)
+                server_info = json.loads(res.text)
+
+                delete_flex_message_contents["hero"]["contents"][0]["url"] = "https://cdn.discordapp.com/icons/{}/{}.png".format(str(server_info["id"]), str(server_info["icon"]))
+                delete_flex_message_contents["body"]["contents"][0]["text"] = server_info["name"]
+                delete_flex_message_contents["footer"]["contents"][0]["action"]["data"] = "delete,{}".format(server_info["id"])
+
+                delete_flex_message["contents"].append(copy.deepcopy(delete_flex_message_contents))
+
+            line_bot_api.push_message(event.source.user_id, FlexSendMessage(alt_text="登録メッセージ", contents=delete_flex_message))
+        else:
+            line_bot_api.push_message(event.source.user_id, TextSendMessage("登録してるサーバーが１つもありません！"))
 
     elif event.postback.data == "setting_server":
         pass
@@ -95,6 +119,17 @@ def post_back(event):
     
     elif event.postback.data == "register_deny":
         line_bot_api.push_message(event.source.user_id, TextSendMessage("サーバーへの登録を拒否しました。\n再度登録する場合はパスワードを再生成してください。"))
+
+    else:
+        data = event.postback.data.split(",")
+        if data[0] == "delete":
+            with session_mng.session_create() as session:
+                line_crud.delete_server(session, event.source.user_id, data[1])
+            line_bot_api.push_message(event.source.user_id, TextSendMessage("サーバーとの連携を解除しました！"))
+        if data[0] == "setting":
+            pass
+        if data[0] == "select":
+            pass
 
 class Line():
     @staticmethod
