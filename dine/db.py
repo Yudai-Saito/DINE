@@ -56,6 +56,12 @@ class LineCrud:
                                 server_id=session.query(Password.server_id).filter(Password.line_id == line_id).scalar()))
         session.query(Password).filter(Password.line_id == line_id).delete()
 
+    def get_server_id(self, session, line_id):
+        return session.query(ServerInfo.server_id).filter(ServerInfo.line_id == line_id).all()
+
+    def delete_server(self, session, line_id, server_id):
+        session.query(ServerInfo).filter(ServerInfo.line_id == line_id, ServerInfo.server_id == server_id).delete()
+
 class DiscordCrud:
     def add_join_server(self, session, server_id):
         session.add(DiscordServer(server_id=server_id))
