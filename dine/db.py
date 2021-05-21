@@ -3,7 +3,7 @@ import os
 import datetime
 from contextlib import contextmanager
 
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, not_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -61,6 +61,18 @@ class LineCrud:
 
     def delete_server(self, session, line_id, server_id):
         session.query(ServerInfo).filter(ServerInfo.line_id == line_id, ServerInfo.server_id == server_id).delete()
+
+    def setting_server_text(self, session, line_id, server_id):
+        session.query(ServerInfo).filter(ServerInfo.line_id == line_id, ServerInfo.server_id == server_id).\
+                    update({ServerInfo.text_notice : not_(ServerInfo.text_notice)})
+
+        return session.query(ServerInfo.text_notice).filter(ServerInfo.line_id == line_id, ServerInfo.server_id == server_id).scalar()
+
+    def setting_server_voice(self, session, line_id, server_id):
+        session.query(ServerInfo).filter(ServerInfo.line_id == line_id, ServerInfo.server_id == server_id).\
+                    update({ServerInfo.voice_notice : not_(ServerInfo.voice_notice)})
+
+        return session.query(ServerInfo.voice_notice).filter(ServerInfo.line_id == line_id, ServerInfo.server_id == server_id).scalar()
 
 class DiscordCrud:
     def add_join_server(self, session, server_id):
