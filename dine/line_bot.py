@@ -116,6 +116,18 @@ def post_back(event):
             for server in servers:
                 res = requests.get(BASE_URL+server[0], headers=HADER)
                 server_info = json.loads(res.text)
+                
+                with session_mng.session_create() as session:
+                    if line_crud.get_server_text(session, event.source.user_id, server[0]) == True:
+                        setting_flex_message_contents["footer"]["contents"][1]["action"]["label"] = "オフ にする"
+                    elif line_crud.get_server_text(session, event.source.user_id, server[0])  == False:
+                        setting_flex_message_contents["footer"]["contents"][1]["action"]["label"] = "オン にする"
+                
+                with session_mng.session_create() as session:
+                    if line_crud.get_server_voice(session, event.source.user_id, server[0]) == True:
+                        setting_flex_message_contents["footer"]["contents"][3]["action"]["label"] = "オフ にする"
+                    elif line_crud.get_server_voice(session, event.source.user_id, server[0])  == False:
+                        setting_flex_message_contents["footer"]["contents"][3]["action"]["label"] = "オン にする"
 
                 setting_flex_message_contents["hero"]["contents"][0]["url"] = "https://cdn.discordapp.com/icons/{}/{}.png".format(str(server_info["id"]), str(server_info["icon"]))
                 setting_flex_message_contents["body"]["contents"][0]["text"] = server_info["name"]
