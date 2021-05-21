@@ -185,7 +185,7 @@ setting_contens = {
             "action": {
               "type": "postback",
               "label": "オン",
-              "data": "setting_text, on"
+              "data": "setting_text,server_id"
             },
             "style": "secondary"
           },
@@ -199,7 +199,7 @@ setting_contens = {
             "action": {
               "type": "postback",
               "label": "オン",
-              "data": "setting_text, on"
+              "data": "setting_vc,server_id"
             },
             "style": "secondary"
           }
