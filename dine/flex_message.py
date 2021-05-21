@@ -72,7 +72,7 @@ register_accept = {
   }
 }
 
-delete_server = {
+carousel_message = {
   "type": "carousel",
   "contents": [
   ]
@@ -135,3 +135,80 @@ delete_server_contents = {
         }
       }
     }
+
+setting_contens = {
+      "type": "bubble",
+      "size": "micro",
+      "hero": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "image",
+            "url": "https://example.com/",
+            "size": "full",
+            "margin": "sm"
+          }
+        ],
+        "paddingBottom": "none",
+        "paddingTop": "none",
+        "backgroundColor": "#AFEEEE"
+      },
+      "body": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "text": "server_name",
+            "align": "center",
+            "position": "relative",
+            "weight": "bold",
+            "size": "md",
+            "margin": "md"
+          }
+        ],
+        "paddingTop": "none",
+        "backgroundColor": "#AFEEEE"
+      },
+      "footer": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "text": "メッセージ通知",
+            "align": "center"
+          },
+          {
+            "type": "button",
+            "action": {
+              "type": "postback",
+              "label": "オン",
+              "data": "setting_text, on"
+            },
+            "style": "secondary"
+          },
+          {
+            "type": "text",
+            "text": "ボイチャ通知",
+            "align": "center"
+          },
+          {
+            "type": "button",
+            "action": {
+              "type": "postback",
+              "label": "オン",
+              "data": "setting_text, on"
+            },
+            "style": "secondary"
+          }
+        ],
+        "spacing": "md"
+      },
+      "styles": {
+        "footer": {
+          "separator": False
+        }
+      }
+    }  
