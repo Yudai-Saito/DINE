@@ -14,7 +14,10 @@ from linebot.models import (MessageEvent, FollowEvent, PostbackEvent, UnfollowEv
                             RichMenu, RichMenuSize, RichMenuArea, RichMenuBounds, PostbackAction)
 
 from db import LineCrud, SessionManager
-from flex_message import password_generate, delete_server, delete_server_contents
+from flex_message import password_generate, carousel_message, delete_server_contents, setting_contens
+
+BASE_URL = "https://discord.com/api/guilds/"
+HADER = {"Authorization":"Bot {}".format(os.environ["DISCORD_TOKEN"])}
 
 api = responder.API()
 
@@ -81,14 +84,11 @@ def post_back(event):
                             )
 
     elif event.postback.data == "delete_server":
-        BASE_URL = "https://discord.com/api/guilds/"
-        HADER = {"Authorization":"Bot {}".format(os.environ["DISCORD_TOKEN"])}
-
         with session_mng.session_create() as session:
             servers = line_crud.get_server_id(session, event.source.user_id)
 
         if len(servers) > 0:
-            delete_flex_message = copy.deepcopy(delete_server)
+            delete_flex_message = copy.deepcopy(carousel_message)
             delete_flex_message_contents = copy.deepcopy(delete_server_contents)
 
             for server in servers:
@@ -106,7 +106,27 @@ def post_back(event):
             line_bot_api.push_message(event.source.user_id, TextSendMessage("登録してるサーバーが１つもありません！"))
 
     elif event.postback.data == "setting_server":
-        pass
+        with session_mng.session_create() as session:
+            servers = line_crud.get_server_id(session, event.source.user_id)
+
+        if len(servers) > 0:
+            setting_flex_message = copy.deepcopy(carousel_message)
+            setting_flex_message_contents = copy.deepcopy(setting_contens)
+
+            for server in servers:
+                res = requests.get(BASE_URL+server[0], headers=HADER)
+                server_info = json.loads(res.text)
+
+                setting_flex_message_contents["hero"]["contents"][0]["url"] = "https://cdn.discordapp.com/icons/{}/{}.png".format(str(server_info["id"]), str(server_info["icon"]))
+                setting_flex_message_contents["body"]["contents"][0]["text"] = server_info["name"]
+                setting_flex_message_contents["footer"]["contents"][1]["action"]["data"] = "delete,{}".format(server_info["id"])
+                setting_flex_message_contents["footer"]["contents"][3]["action"]["data"] = "delete,{}".format(server_info["id"])
+
+                setting_flex_message["contents"].append(copy.deepcopy(setting_flex_message_contents))
+
+            line_bot_api.push_message(event.source.user_id, FlexSendMessage(alt_text="設定メッセージ", contents=setting_flex_message))
+        else:
+            line_bot_api.push_message(event.source.user_id, TextSendMessage("登録してるサーバーが１つもありません！"))
 
     elif event.postback.data == "select_server":
         pass
