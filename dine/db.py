@@ -62,12 +62,18 @@ class LineCrud:
     def delete_server(self, session, line_id, server_id):
         session.query(ServerInfo).filter(ServerInfo.line_id == line_id, ServerInfo.server_id == server_id).delete()
 
+    def get_server_text(self, session, line_id, server_id):
+        return session.query(ServerInfo.text_notice).filter(ServerInfo.line_id == line_id, ServerInfo.server_id == server_id).scalar()
+
+    def get_server_voice(self, session, line_id, server_id):
+        return session.query(ServerInfo.voice_notice).filter(ServerInfo.line_id == line_id, ServerInfo.server_id == server_id).scalar()
+
     def setting_server_text(self, session, line_id, server_id):
         session.query(ServerInfo).filter(ServerInfo.line_id == line_id, ServerInfo.server_id == server_id).\
                     update({ServerInfo.text_notice : not_(ServerInfo.text_notice)})
 
         return session.query(ServerInfo.text_notice).filter(ServerInfo.line_id == line_id, ServerInfo.server_id == server_id).scalar()
-
+    
     def setting_server_voice(self, session, line_id, server_id):
         session.query(ServerInfo).filter(ServerInfo.line_id == line_id, ServerInfo.server_id == server_id).\
                     update({ServerInfo.voice_notice : not_(ServerInfo.voice_notice)})
