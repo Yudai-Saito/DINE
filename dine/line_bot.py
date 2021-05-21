@@ -119,8 +119,8 @@ def post_back(event):
 
                 setting_flex_message_contents["hero"]["contents"][0]["url"] = "https://cdn.discordapp.com/icons/{}/{}.png".format(str(server_info["id"]), str(server_info["icon"]))
                 setting_flex_message_contents["body"]["contents"][0]["text"] = server_info["name"]
-                setting_flex_message_contents["footer"]["contents"][1]["action"]["data"] = "delete,{}".format(server_info["id"])
-                setting_flex_message_contents["footer"]["contents"][3]["action"]["data"] = "delete,{}".format(server_info["id"])
+                setting_flex_message_contents["footer"]["contents"][1]["action"]["data"] = "setting_text,{}".format(server_info["id"])
+                setting_flex_message_contents["footer"]["contents"][3]["action"]["data"] = "setting_vc,{}".format(server_info["id"])
 
                 setting_flex_message["contents"].append(copy.deepcopy(setting_flex_message_contents))
 
@@ -146,8 +146,27 @@ def post_back(event):
             with session_mng.session_create() as session:
                 line_crud.delete_server(session, event.source.user_id, data[1])
             line_bot_api.push_message(event.source.user_id, TextSendMessage("サーバーとの連携を解除しました！"))
-        if data[0] == "setting":
-            pass
+        if data[0] == "setting_text":
+            with session_mng.session_create() as session:
+                text_notice = line_crud.setting_server_text(session, event.source.user_id, data[1])
+
+            if text_notice == True:
+                notice_message = "オン"
+            elif text_notice == False:
+                notice_message = "オフ"
+
+            line_bot_api.push_message(event.source.user_id, TextSendMessage("サーバーのメッセージ通知を {} にしました！".format(notice_message)))
+
+        if data[0] == "setting_vc":
+            with session_mng.session_create() as session:
+                text_notice = line_crud.setting_server_voice(session, event.source.user_id, data[1])
+            
+            if text_notice == True:
+                notice_message = "オン"
+            elif text_notice == False:
+                notice_message = "オフ"
+
+            line_bot_api.push_message(event.source.user_id, TextSendMessage("サーバーのボイスチャット通知を {} にしました！".format(notice_message)))
         if data[0] == "select":
             pass
 
