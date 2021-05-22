@@ -52,7 +52,8 @@ def handle_message(event):
 
 @handler.add(FollowEvent)
 def following(event):
-    pass
+    with session_mng.session_create() as session:
+        line_crud.add_following_user(session, event.source.user_id)
 
 @handler.add(UnfollowEvent)
 def unfollow(event):
@@ -179,6 +180,7 @@ def post_back(event):
                 notice_message = "オフ"
 
             line_bot_api.push_message(event.source.user_id, TextSendMessage("サーバーのボイスチャット通知を {} にしました！".format(notice_message)))
+        
         if data[0] == "select":
             pass
 
