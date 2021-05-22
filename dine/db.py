@@ -13,6 +13,12 @@ engine = create_engine("{}://{}:{}@{}:{}/{}"\
 
 Base = declarative_base()
 
+class User(Base):
+    __tablename__ = "user_info"
+    line_id = Column(String, primary_key=True)
+    talk_server = Column(String)
+    talk_time = Column(DateTime)
+
 class Password(Base):
     __tablename__ = "password"
     line_id = Column(String, primary_key=True)
@@ -38,6 +44,9 @@ class ServerInfo(Base):
     voice_notice = Column(Boolean, default=True)
 
 class LineCrud:
+    def add_following_user(self, session, line_id):
+        session.add(User(line_id=line_id))
+
     def add_following_to_password(self, session, line_id, password):
         session.add(Password(line_id=line_id, password=password, register_time=datetime.datetime.now()))
     
@@ -48,6 +57,7 @@ class LineCrud:
         return session.query(session.query(Password).filter(Password.line_id == line_id).exists()).scalar()
 
     def del_userinfo_block(self, session, line_id):
+        session.query(User).filter(User.line_id)
         session.query(Password).filter(Password.line_id == line_id).delete()
         session.query(ServerInfo).filter(ServerInfo.line_id == line_id).delete()
 
