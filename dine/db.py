@@ -96,6 +96,9 @@ class LineCrud:
             session.query(User).filter(User.line_id == line_id).update({User.talk_server : discord_server[0][0]})
         else:
             session.query(User).filter(User.line_id == line_id).update({User.talk_server : None})
+            
+    def set_user_talk_server(self, session, line_id, server_id):
+        session.query(User).filter(User.line_id == line_id).update({User.talk_server : server_id})
 
 class DiscordCrud:
     def add_join_server(self, session, server_id):
