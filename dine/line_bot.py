@@ -147,7 +147,10 @@ def post_back(event):
     elif event.postback.data == "register_accept":
         with session_mng.session_create() as session:
             line_crud.accept_user(session, event.source.user_id)
-
+        
+        with session_mng.session_create() as session:
+            line_crud.set_user_info(session, event.source.user_id)
+        
         line_bot_api.push_message(event.source.user_id, TextSendMessage("サーバーへの登録が完了しました！"))
     
     elif event.postback.data == "register_deny":
