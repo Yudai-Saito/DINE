@@ -122,6 +122,10 @@ class DiscordCrud:
 
     def get_prefix(self, session, server_id):
         return session.query(DiscordServer.prefix).filter(DiscordServer.server_id == str(server_id)).scalar()
+    
+    def set_channel_id(self, session, server_id, channel_id):
+        session.query(DiscordServer).filter(DiscordServer.server_id == server_id).update({DiscordServer.channel_id : channel_id})
+
 
 class ScheduleManager():
     def time_over_user(self, session):
