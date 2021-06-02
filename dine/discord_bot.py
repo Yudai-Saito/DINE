@@ -32,6 +32,10 @@ class Dine(commands.Bot):
                     self.discord_crud.set_channel_id(session, str(guild.id), str(channnel.id))
                 await channnel.send("DINEへようこそ！\nLINEメッセージの受信チャンネル変更は!dine channelコマンドを使ってください！")
                 return
-
+            
+    async def on_guild_remove(self, guild):
+        with self.session_mng.session_create() as session:
+            self.discord_crud.delete_server(session, str(guild.id))
+    
     def begin(self):
         self.run(os.environ["DISCORD_TOKEN"])
