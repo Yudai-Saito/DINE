@@ -34,6 +34,13 @@ class DineCog(commands.Cog):
             await ctx.send("prefixは1文字で設定してください！")
 
     @dine.command()
+    async def channel(self, ctx):
+        with self.session_mng.session_create() as session:
+            self.discord_crud.set_channel_id(session, str(ctx.guild.id), str(ctx.message.channel.id))
+
+        await ctx.send("LINE受信チャンネルを変更しました！")
+
+    @dine.command()
     async def add(self, ctx, password):
         with self.session_mng.session_create() as session:
             if self.discord_crud.exists_user(session, ctx.guild.id, ctx.author.id) == False:
