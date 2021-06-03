@@ -1,5 +1,5 @@
 #coding : utf-8
-
+import discord
 from discord.ext import commands
 
 from db import DiscordCrud, SessionManager
@@ -35,10 +35,20 @@ class DineCog(commands.Cog):
 
     @dine.command()
     async def channel(self, ctx):
-        with self.session_mng.session_create() as session:
-            self.discord_crud.set_channel_id(session, str(ctx.guild.id), str(ctx.message.channel.id))
 
-        await ctx.send("LINE受信チャンネルを変更しました！")
+        with self.session_mng.session_create() as session:
+            delete_webhook = self.discord_crud.get_webhook_id(session, str(ctx.guild.id))
+
+        if delete_webhook[0] != None:
+            webhook = discord.utils.get(await ctx.guild.webhooks(), id=int(delete_webhook[0]))
+            await webhook.delete()
+
+        webhook = await ctx.message.channel.create_webhook(name="Dine_Webhook")
+
+        with self.session_mng.session_create() as session:
+            self.discord_crud.set_webhook_id(session, str(ctx.guild.id), str(webhook.id))
+
+        await webhook.send("LINE受信チャンネルの設定が完了しました！")
 
     @dine.command()
     async def add(self, ctx, password):
