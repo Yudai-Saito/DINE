@@ -25,12 +25,10 @@ class Dine(commands.Bot):
     async def on_guild_join(self, guild):
         with self.session_mng.session_create() as session:
             self.discord_crud.add_join_server(session, guild.id)
-        
+ 
         for channel in guild.channels:
             if type(channel) is discord.TextChannel:
-                with self.session_mng.session_create() as session:
-                    self.discord_crud.set_channel_id(session, str(guild.id), str(channel.id))
-                await channel.send("DINEへようこそ！\nLINEメッセージの受信チャンネル変更は!dine channelコマンドを使ってください！")
+                await channel.send("DINEへようこそ！\nLINEメッセージを受信するチャンネルで!dine channelコマンドを実行してください！")
                 return
             
     async def on_guild_remove(self, guild):
