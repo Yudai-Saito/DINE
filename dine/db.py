@@ -31,7 +31,7 @@ class Password(Base):
 class DiscordServer(Base):
     __tablename__ = "dicord_server"
     server_id = Column(String, primary_key=True)
-    channel_id = Column(String)
+    webhook_id = Column(String)
     prefix = Column(String, default="!")
 
 class ServerInfo(Base):
@@ -57,7 +57,7 @@ class LineCrud:
         return session.query(session.query(Password).filter(Password.line_id == line_id).exists()).scalar()
 
     def del_userinfo_block(self, session, line_id):
-        session.query(User).filter(User.line_id)
+        session.query(User).filter(User.line_id).filter(User.line_id == line_id).delete()
         session.query(Password).filter(Password.line_id == line_id).delete()
         session.query(ServerInfo).filter(ServerInfo.line_id == line_id).delete()
 
@@ -123,8 +123,11 @@ class DiscordCrud:
     def get_prefix(self, session, server_id):
         return session.query(DiscordServer.prefix).filter(DiscordServer.server_id == str(server_id)).scalar()
     
-    def set_channel_id(self, session, server_id, channel_id):
-        session.query(DiscordServer).filter(DiscordServer.server_id == server_id).update({DiscordServer.channel_id : channel_id})
+    def set_webhook_id(self, session, server_id, webhook_id):
+        session.query(DiscordServer).filter(DiscordServer.server_id == server_id).update({DiscordServer.webhook_id : webhook_id})
+
+    def get_webhook_id(self, session, server_id):
+        return session.query(DiscordServer.webhook_id).filter(DiscordServer.server_id == server_id).one()
 
     def delete_server(self, session, server_id):
         session.query(DiscordServer).filter(DiscordServer.server_id == server_id).delete()
