@@ -3,7 +3,7 @@ import os
 import datetime
 from contextlib import contextmanager
 
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, not_
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, not_, func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -136,6 +136,9 @@ class ScheduleManager():
     def time_over_user(self, session):
         nowtime = datetime.datetime.now()
         session.query(Password).filter(Password.register_time < nowtime - datetime.timedelta(minutes=5)).delete()
+
+        session.query(User).filter(User.talk_time < nowtime - datetime.timedelta(minutes=5), User.line_id.in_(session.query(ServerInfo.line_id).\
+            group_by(ServerInfo.line_id).having(func.count(ServerInfo.line_id) > 1))).update({User.talk_server : None}, synchronize_session="fetch")
 
 class SessionManager:
     @contextmanager
