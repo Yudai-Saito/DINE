@@ -181,6 +181,7 @@ def post_back(event):
             with session_mng.session_create() as session:
                 line_crud.delete_server(session, event.source.user_id, data[1])
             line_bot_api.push_message(event.source.user_id, TextSendMessage("サーバーとの連携を解除しました！"))
+
         if data[0] == "setting_text":
             with session_mng.session_create() as session:
                 text_notice = line_crud.setting_server_text(session, event.source.user_id, data[1])
@@ -205,7 +206,8 @@ def post_back(event):
         
         if data[0] == "select":
             with session_mng.session_create() as session:
-                line_crud.set_(session, event.source.user_id, data[1])
+                line_crud.set_user_talk_server(session, event.source.user_id, data[1])
+
             line_bot_api.push_message(event.source.user_id, TextSendMessage("メッセージ送信先のサーバーを変更しました！"))
 
 class Line():
