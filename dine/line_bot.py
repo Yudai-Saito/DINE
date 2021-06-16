@@ -48,7 +48,13 @@ async def on_post(req, resp):
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    
+    with session_mng.session_create() as session:
+        webhook_id = line_crud.get_webhook_id(session, event.source.user_id) 
+
+    if webhook_id == None:
+       line_bot_api.push_message(event.source.user_id, TextSendMessage("送信先サーバーを選択してください！"))     
+       return     
+
     with session_mng.session_create() as session:
         user = line_crud.get_discord_user(session, event.source.user_id) 
 
@@ -61,14 +67,13 @@ def handle_message(event):
         "content" : event.message.text
     }
 
-    with session_mng.session_create() as session:
-        webhook_id = line_crud.get_webhook_id(session, event.source.user_id) 
-
     webhook_info = json.loads(requests.get("{}/webhooks/{}".format(BASE_URL, webhook_id), headers=HADER).text)
     webhook_url =  "{}/webhooks/{}/{}".format(BASE_URL, webhook_info["id"], webhook_info["token"])
 
     res = requests.post(webhook_url, webhook_contents)
 
+    with session_mng.session_create() as session:
+        line_crud.set_talk_time(session, event.source.user_id)
 
 @handler.add(FollowEvent)
 def following(event):
