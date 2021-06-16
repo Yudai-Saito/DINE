@@ -114,6 +114,9 @@ class LineCrud:
         else:
             return session.query(DiscordServer.webhook_id).filter(DiscordServer.server_id == talk_server).scalar()
 
+    def set_talk_time(self, session, line_id):
+        session.query(User).filter(User.line_id == line_id).update({User.talk_time : datetime.datetime.now()})
+
 class DiscordCrud:
     def add_join_server(self, session, server_id):
         session.add(DiscordServer(server_id=server_id))
