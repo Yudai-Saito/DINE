@@ -16,6 +16,7 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = "user_info"
     line_id = Column(String, primary_key=True)
+    discord_id = Column(String, unique=True)
     talk_server = Column(String)
     talk_time = Column(DateTime)
 
@@ -57,12 +58,14 @@ class LineCrud:
         return session.query(session.query(Password).filter(Password.line_id == line_id).exists()).scalar()
 
     def del_userinfo_block(self, session, line_id):
-        session.query(User).filter(User.line_id).filter(User.line_id == line_id).delete()
+        session.query(User).filter(User.line_id == line_id).delete()
         session.query(Password).filter(Password.line_id == line_id).delete()
         session.query(ServerInfo).filter(ServerInfo.line_id == line_id).delete()
 
     def accept_user(self, session, line_id):
-        session.add(ServerInfo(line_id=line_id, discord_id=session.query(Password.discord_id).filter(Password.line_id == line_id).scalar(),\
+        discord_id = session.query(Password.discord_id).filter(Password.line_id == line_id).scalar()
+        session.query(User).filter(User.line_id == line_id).update({User.discord_id : discord_id})
+        session.add(ServerInfo(line_id=line_id, discord_id=discord_id,\
                                 server_id=session.query(Password.server_id).filter(Password.line_id == line_id).scalar()))
         session.query(Password).filter(Password.line_id == line_id).delete()
 
@@ -91,14 +94,25 @@ class LineCrud:
         return session.query(ServerInfo.voice_notice).filter(ServerInfo.line_id == line_id, ServerInfo.server_id == server_id).scalar()
         
     def set_user_info(self, session, line_id):
-        discord_server = session.query(ServerInfo.server_id).filter(User.line_id == line_id).all() 
-        if  len(discord_server) <= 1:
+        discord_server = session.query(ServerInfo.server_id).filter(User.line_id == line_id).all()
+        if len(discord_server) <= 1:
             session.query(User).filter(User.line_id == line_id).update({User.talk_server : discord_server[0][0]})
         else:
             session.query(User).filter(User.line_id == line_id).update({User.talk_server : None})
             
     def set_user_talk_server(self, session, line_id, server_id):
         session.query(User).filter(User.line_id == line_id).update({User.talk_server : server_id})
+
+    def get_discord_user(self, session, line_id):
+        return session.query(User.discord_id).filter(User.line_id == line_id).scalar()
+
+    def get_webhook_id(self, session, line_id):
+        talk_server = session.query(User.talk_server).filter(User.line_id == line_id).scalar()
+
+        if talk_server == None:
+            return None
+        else:
+            return session.query(DiscordServer.webhook_id).filter(DiscordServer.server_id == talk_server).scalar()
 
 class DiscordCrud:
     def add_join_server(self, session, server_id):
