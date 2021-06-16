@@ -16,7 +16,7 @@ from linebot.models import (MessageEvent, FollowEvent, PostbackEvent, UnfollowEv
 from db import LineCrud, SessionManager
 from flex_message import password_generate, carousel_message, delete_server_contents, setting_contens, select_contents
 
-BASE_URL = "https://discord.com/api/guilds/"
+BASE_URL = "https://discord.com/api"
 HADER = {"Authorization":"Bot {}".format(os.environ["DISCORD_TOKEN"])}
 
 api = responder.API()
@@ -48,7 +48,27 @@ async def on_post(req, resp):
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=event.message.text))
+    
+    with session_mng.session_create() as session:
+        user = line_crud.get_discord_user(session, event.source.user_id) 
+
+    user_info = json.loads(requests.get("{}/users/{}".format(BASE_URL, user), headers=HADER).text)
+    avatar_url = "https://cdn.discordapp.com/avatars/{}/{}.jpg".format(user_info["id"], user_info["avatar"])
+
+    webhook_contents = {
+        "username" : user_info["username"],
+        "avatar_url" : avatar_url,
+        "content" : event.message.text
+    }
+
+    with session_mng.session_create() as session:
+        webhook_id = line_crud.get_webhook_id(session, event.source.user_id) 
+
+    webhook_info = json.loads(requests.get("{}/webhooks/{}".format(BASE_URL, webhook_id), headers=HADER).text)
+    webhook_url =  "{}/webhooks/{}/{}".format(BASE_URL, webhook_info["id"], webhook_info["token"])
+
+    res = requests.post(webhook_url, webhook_contents)
+
 
 @handler.add(FollowEvent)
 def following(event):
@@ -93,7 +113,7 @@ def post_back(event):
             delete_flex_message_contents = copy.deepcopy(delete_server_contents)
 
             for server in servers:
-                res = requests.get(BASE_URL+server[0], headers=HADER)
+                res = requests.get("{}/guilds/{}".format(BASE_URL, str(server[0])), headers=HADER)
                 server_info = json.loads(res.text)
 
                 delete_flex_message_contents["hero"]["contents"][0]["url"] = "https://cdn.discordapp.com/icons/{}/{}.png".format(str(server_info["id"]), str(server_info["icon"]))
@@ -115,9 +135,9 @@ def post_back(event):
             setting_flex_message_contents = copy.deepcopy(setting_contens)
 
             for server in servers:
-                res = requests.get(BASE_URL+server[0], headers=HADER)
+                res = requests.get("{}/guilds/{}".format(BASE_URL, server[0]), headers=HADER)
                 server_info = json.loads(res.text)
-                
+
                 with session_mng.session_create() as session:
                     if line_crud.get_server_text(session, event.source.user_id, server[0]) == True:
                         setting_flex_message_contents["footer"]["contents"][1]["action"]["label"] = "オフ にする"
@@ -150,7 +170,7 @@ def post_back(event):
             select_flex_message_contents = copy.deepcopy(select_contents)
 
             for server in servers:
-                res = requests.get(BASE_URL+server[0], headers=HADER)
+                res = requests.get("{}/guilds/{}".format(BASE_URL, server[0]), headers=HADER)
                 server_info = json.loads(res.text)
 
                 select_flex_message_contents["hero"]["contents"][0]["url"] = "https://cdn.discordapp.com/icons/{}/{}.png".format(str(server_info["id"]), str(server_info["icon"]))
