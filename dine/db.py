@@ -149,6 +149,10 @@ class DiscordCrud:
     def delete_server(self, session, server_id):
         session.query(DiscordServer).filter(DiscordServer.server_id == server_id).delete()
 
+    def get_line_id(self, session, server_id, discord_ids):
+        return session.query(ServerInfo.line_id).filter(ServerInfo.server_id == server_id, ServerInfo.discord_id.in_(discord_ids), ServerInfo.text_notice == True).all()
+
+
 class ScheduleManager():
     def time_over_user(self, session):
         nowtime = datetime.datetime.now()
