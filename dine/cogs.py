@@ -7,6 +7,13 @@ from line_bot import line_bot_api
 from linebot.models import TextSendMessage, FlexSendMessage
 from flex_message import register_accept
 
+import os
+import re
+from linebot import LineBotApi          
+from linebot.models import TextSendMessage
+
+line_bot_api = LineBotApi(os.environ["LINE_ACCESS_TOKEN"])
+
 class DineCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -21,8 +28,16 @@ class DineCog(commands.Cog):
             await message.channel.send("サーバーのprefixは {} です！".format(prefix))
 
     @commands.group()
-    async def dine(self, ctx):
-        pass
+    async def dine(self, ctx, *args):
+        index = args.index(",")
+        discord_user_id = [re.sub("\D+", "", x) for x in args[:index]]
+        message = "".join(map(str, args[index + 1:]))
+
+        with self.session_mng.session_create() as session:
+            line_users = self.discord_crud.get_line_id(session, str(ctx.guild.id), discord_user_id)
+
+        line_send_message = ("[{}]\n[{}]\n{}".format(ctx.guild.name, ctx.author.name, message))
+        line_bot_api.multicast(list(line_users[0]), TextSendMessage(line_send_message)) 
 
     @dine.command()
     async def prefix(self, ctx, prefix):
