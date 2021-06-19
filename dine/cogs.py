@@ -29,15 +29,18 @@ class DineCog(commands.Cog):
 
     @commands.group()
     async def dine(self, ctx, *args):
-        index = args.index(",")
-        discord_user_id = [re.sub("\D+", "", x) for x in args[:index]]
-        message = "".join(map(str, args[index + 1:]))
+        try:
+            index = args.index(",")
+            discord_user_id = [re.sub("\D+", "", x) for x in args[:index]]
+            message = "".join(map(str, args[index + 1:]))
 
-        with self.session_mng.session_create() as session:
-            line_users = self.discord_crud.get_line_id(session, str(ctx.guild.id), discord_user_id)
+            with self.session_mng.session_create() as session:
+                line_users = self.discord_crud.get_line_id(session, str(ctx.guild.id), discord_user_id)
 
-        line_send_message = ("[{}]\n[{}]\n{}".format(ctx.guild.name, ctx.author.name, message))
-        line_bot_api.multicast(list(line_users[0]), TextSendMessage(line_send_message)) 
+            line_send_message = ("[{}]\n[{}]\n{}".format(ctx.guild.name, ctx.author.name, message))
+            line_bot_api.multicast(list(line_users[0]), TextSendMessage(line_send_message)) 
+        except:
+            await ctx.send("入力に誤りがあります！")
 
     @dine.command()
     async def prefix(self, ctx, prefix):
