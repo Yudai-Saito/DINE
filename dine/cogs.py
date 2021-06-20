@@ -60,18 +60,17 @@ class DineCog(commands.Cog):
             await ctx.send("prefixは1文字で設定してください！")
 
     async def channel(self, ctx):
-
         with self.session_mng.session_create() as session:
             delete_webhook = self.discord_crud.get_webhook_id(session, str(ctx.guild.id))
-
-        if delete_webhook[0] != None:
-            webhook = discord.utils.get(await ctx.guild.webhooks(), id=int(delete_webhook[0]))
-            await webhook.delete()
 
         webhook = await ctx.message.channel.create_webhook(name="Dine_Webhook")
 
         with self.session_mng.session_create() as session:
             self.discord_crud.set_webhook_id(session, str(ctx.guild.id), str(webhook.id))
+
+        if delete_webhook[0] != None:
+            delete_webhook = discord.utils.get(await ctx.guild.webhooks(), id=int(delete_webhook[0]))
+            await delete_webhook.delete()
 
         await webhook.send("LINE受信チャンネルの設定が完了しました！")
 
