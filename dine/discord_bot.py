@@ -33,6 +33,12 @@ class Dine(commands.Bot):
                 return
 
     async def on_webhooks_update(self, channel):
+        await self.on_webhook_delete(channel)
+        
+    async def on_guild_channel_delete(self, channel):
+        await self.on_webhook_delete(channel)
+
+    async def on_webhook_delete(self, channel): 
         webhook_lists = await channel.guild.webhooks()
 
         with self.session_mng.session_create() as session:
@@ -44,7 +50,7 @@ class Dine(commands.Bot):
                 return
 
         with self.session_mng.session_create() as session:
-            server_webhook = self.discord_crud.set_webhook_id(session, str(channel.guild.id), None)
+            self.discord_crud.set_webhook_id(session, str(channel.guild.id), None)
 
         for channel in channel.guild.channels:
             if type(channel) is discord.TextChannel:
