@@ -27,22 +27,30 @@ class DineCog(commands.Cog):
                 prefix = self.discord_crud.get_prefix(session, message.guild.id)
             await message.channel.send("サーバーのprefixは {} です！".format(prefix))
 
-    @commands.group()
+    @commands.command()
     async def dine(self, ctx, *args):
-        try:
-            index = args.index(",")
-            discord_user_id = [re.sub("\D+", "", x) for x in args[:index]]
-            message = "".join(map(str, args[index + 1:]))
+        command = args[0] 
 
-            with self.session_mng.session_create() as session:
-                line_users = self.discord_crud.get_line_id(session, str(ctx.guild.id), discord_user_id)
+        if command == "prefix":
+            await self.prefix(ctx, args[1])
+        elif command == "channel":
+            await self.channel(ctx)
+        elif command == "add": 
+            await self.add(ctx, args[1])
+        else:
+            try:
+                index = args.index(",")
+                discord_user_id = [re.sub("\D+", "", x) for x in args[:index]]
+                message = "".join(map(str, args[index + 1:]))
 
-            line_send_message = ("[{}]\n[{}]\n{}".format(ctx.guild.name, ctx.author.name, message))
-            line_bot_api.multicast(list(line_users[0]), TextSendMessage(line_send_message)) 
-        except:
-            await ctx.send("入力に誤りがあります！")
+                with self.session_mng.session_create() as session:
+                    line_users = self.discord_crud.get_line_id(session, str(ctx.guild.id), discord_user_id)
 
-    @dine.command()
+                line_send_message = ("[{}]\n[{}]\n{}".format(ctx.guild.name, ctx.author.name, message))
+                line_bot_api.multicast(list(line_users[0]), TextSendMessage(line_send_message)) 
+            except:
+                await ctx.send("入力に誤りがあります！")
+
     async def prefix(self, ctx, prefix):
         if len(prefix) == 1:
             with self.session_mng.session_create() as session:
@@ -51,7 +59,6 @@ class DineCog(commands.Cog):
         else:
             await ctx.send("prefixは1文字で設定してください！")
 
-    @dine.command()
     async def channel(self, ctx):
 
         with self.session_mng.session_create() as session:
@@ -68,7 +75,6 @@ class DineCog(commands.Cog):
 
         await webhook.send("LINE受信チャンネルの設定が完了しました！")
 
-    @dine.command()
     async def add(self, ctx, password):
         with self.session_mng.session_create() as session:
             if self.discord_crud.exists_user(session, ctx.guild.id, ctx.author.id) == False:
