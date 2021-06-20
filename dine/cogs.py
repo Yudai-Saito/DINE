@@ -52,27 +52,33 @@ class DineCog(commands.Cog):
                 await ctx.send("入力に誤りがあります！")
 
     async def prefix(self, ctx, prefix):
-        if len(prefix) == 1:
-            with self.session_mng.session_create() as session:
-                self.discord_crud.set_prefix(session, ctx.guild.id, prefix)
-            await ctx.send("prefixを変更しました！")
+        if ctx.author.guild_permissions.administrator:
+            if len(prefix) == 1:
+                with self.session_mng.session_create() as session:
+                    self.discord_crud.set_prefix(session, ctx.guild.id, prefix)
+                await ctx.send("prefixを変更しました！")
+            else:
+                await ctx.send("prefixは1文字で設定してください！")
         else:
-            await ctx.send("prefixは1文字で設定してください！")
+            await ctx.send("管理者用コマンドです！")
 
     async def channel(self, ctx):
-        with self.session_mng.session_create() as session:
-            delete_webhook = self.discord_crud.get_webhook_id(session, str(ctx.guild.id))
+        if ctx.author.guild_permissions.administrator:
+            with self.session_mng.session_create() as session:
+                delete_webhook = self.discord_crud.get_webhook_id(session, str(ctx.guild.id))
 
-        webhook = await ctx.message.channel.create_webhook(name="Dine_Webhook")
+            webhook = await ctx.message.channel.create_webhook(name="Dine_Webhook")
 
-        with self.session_mng.session_create() as session:
-            self.discord_crud.set_webhook_id(session, str(ctx.guild.id), str(webhook.id))
+            with self.session_mng.session_create() as session:
+                self.discord_crud.set_webhook_id(session, str(ctx.guild.id), str(webhook.id))
 
-        if delete_webhook[0] != None:
-            delete_webhook = discord.utils.get(await ctx.guild.webhooks(), id=int(delete_webhook[0]))
-            await delete_webhook.delete()
+            if delete_webhook[0] != None:
+                delete_webhook = discord.utils.get(await ctx.guild.webhooks(), id=int(delete_webhook[0]))
+                await delete_webhook.delete()
 
-        await webhook.send("LINE受信チャンネルの設定が完了しました！")
+            await webhook.send("LINE受信チャンネルの設定が完了しました！")
+        else:
+            await ctx.send("管理者用コマンドです！")
 
     async def add(self, ctx, password):
         with self.session_mng.session_create() as session:
