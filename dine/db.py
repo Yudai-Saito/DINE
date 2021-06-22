@@ -75,6 +75,12 @@ class LineCrud:
     def delete_server(self, session, line_id, server_id):
         session.query(ServerInfo).filter(ServerInfo.line_id == line_id, ServerInfo.server_id == server_id).delete()
 
+        discord_server = session.query(ServerInfo.server_id).filter(User.line_id == line_id).all()
+        if len(discord_server) == 1:
+            session.query(User).filter(User.line_id == line_id).update({User.talk_server : discord_server[0][0]})
+        else:
+            session.query(User).filter(User.line_id == line_id, User.talk_server == server_id).update({User.talk_server : None})
+
     def get_server_text(self, session, line_id, server_id):
         return session.query(ServerInfo.text_notice).filter(ServerInfo.line_id == line_id, ServerInfo.server_id == server_id).scalar()
 
@@ -95,7 +101,7 @@ class LineCrud:
         
     def set_user_info(self, session, line_id):
         discord_server = session.query(ServerInfo.server_id).filter(User.line_id == line_id).all()
-        if len(discord_server) <= 1:
+        if len(discord_server) == 1:
             session.query(User).filter(User.line_id == line_id).update({User.talk_server : discord_server[0][0]})
         else:
             session.query(User).filter(User.line_id == line_id).update({User.talk_server : None})
