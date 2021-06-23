@@ -107,8 +107,12 @@ class LineCrud:
             session.query(User).filter(User.line_id == line_id).update({User.talk_server : None})
             
     def set_user_talk_server(self, session, line_id, server_id):
-        session.query(User).filter(User.line_id == line_id).update({User.talk_server : server_id})
-
+        user_stat = session.query(session.query(ServerInfo).filter(ServerInfo.line_id == line_id, ServerInfo.server_id == server_id).exists()).scalar()
+        if user_stat == True:
+            session.query(User).filter(User.line_id == line_id).update({User.talk_server : server_id})
+            return True
+        else:
+            return False
     def get_discord_user(self, session, line_id):
         return session.query(User.discord_id).filter(User.line_id == line_id).scalar()
 
