@@ -29,13 +29,11 @@ class DineCog(commands.Cog):
 
     @commands.command()
     async def dine(self, ctx, *args):
-        command = args[0] 
-
-        if command == "prefix":
-            await self.prefix(ctx, args[1])
-        elif command == "channel":
+        if args[0] == "channel":
             await self.channel(ctx)
-        elif command == "add": 
+        elif args[0] == "prefix":
+            await self.prefix(ctx, args[1])
+        elif args[0] == "add": 
             await self.add(ctx, args[1])
         else:
             try:
