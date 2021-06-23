@@ -215,6 +215,9 @@ def post_back(event):
                 notice_message = "オン"
             elif text_notice == False:
                 notice_message = "オフ"
+            elif text_notice == None:
+                line_bot_api.push_message(event.source.user_id, TextSendMessage("設定したサーバーとは連携解除が解除されています！"))
+                return
 
             line_bot_api.push_message(event.source.user_id, TextSendMessage("サーバーのメッセージ通知を {} にしました！".format(notice_message)))
 
@@ -226,7 +229,10 @@ def post_back(event):
                 notice_message = "オン"
             elif text_notice == False:
                 notice_message = "オフ"
-
+            elif text_notice == None:
+                line_bot_api.push_message(event.source.user_id, TextSendMessage("設定したサーバーとは連携解除が解除されています！"))
+                return
+                
             line_bot_api.push_message(event.source.user_id, TextSendMessage("サーバーのボイスチャット通知を {} にしました！".format(notice_message)))
         
         if data[0] == "select":
