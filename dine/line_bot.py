@@ -232,14 +232,17 @@ def post_back(event):
             elif text_notice == None:
                 line_bot_api.push_message(event.source.user_id, TextSendMessage("設定したサーバーとは連携解除が解除されています！"))
                 return
-                
+
             line_bot_api.push_message(event.source.user_id, TextSendMessage("サーバーのボイスチャット通知を {} にしました！".format(notice_message)))
         
         if data[0] == "select":
             with session_mng.session_create() as session:
-                line_crud.set_user_talk_server(session, event.source.user_id, data[1])
+                user_res = line_crud.set_user_talk_server(session, event.source.user_id, data[1])
 
-            line_bot_api.push_message(event.source.user_id, TextSendMessage("メッセージ送信先のサーバーを変更しました！"))
+            if user_res == True:
+                line_bot_api.push_message(event.source.user_id, TextSendMessage("メッセージ送信先のサーバーを変更しました！"))
+            else:
+                line_bot_api.push_message(event.source.user_id, TextSendMessage("設定したサーバーとは連携解除が解除されています！"))
 
 class Line():
     @staticmethod
