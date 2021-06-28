@@ -51,7 +51,10 @@ def handle_message(event):
     with session_mng.session_create() as session:
         webhook_id = line_crud.get_webhook_id(session, event.source.user_id) 
 
-    if webhook_id == None:
+    if webhook_id == False:
+       line_bot_api.reply_message(event.reply_token, TextSendMessage("LINEとDiscordを連携させましょう！"))     
+       return
+    elif webhook_id == None:
        line_bot_api.reply_message(event.reply_token, TextSendMessage("送信先サーバーを選択してください！"))     
        return     
 
