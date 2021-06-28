@@ -52,7 +52,7 @@ def handle_message(event):
         webhook_id = line_crud.get_webhook_id(session, event.source.user_id) 
 
     if webhook_id == None:
-       line_bot_api.push_message(event.source.user_id, TextSendMessage("送信先サーバーを選択してください！"))     
+       line_bot_api.reply_message(event.reply_token, TextSendMessage("送信先サーバーを選択してください！"))     
        return     
 
     with session_mng.session_create() as session:
@@ -90,7 +90,7 @@ def post_back(event):
     if event.postback.data == "register_server":
         with session_mng.session_create() as session:
             if line_crud.exists_line_user(session, event.source.user_id) == True:
-                line_bot_api.push_message(event.source.user_id, TextSendMessage("既に登録用コマンドを発行済です！"))
+                line_bot_api.reply_message(event.reply_token, TextSendMessage("既に登録用コマンドを発行済です！"))
             else:
                 password = Line.password_gen()
 
@@ -101,8 +101,8 @@ def post_back(event):
                 with session_mng.session_create() as session:
                     line_crud.add_following_to_password(session, event.source.user_id, password)
 
-                line_bot_api.push_message(
-                                event.source.user_id, 
+                line_bot_api.reply_message(
+                                event.reply_token, 
                                 [
                                     FlexSendMessage(alt_text="登録メッセージ", contents=flex_message),
                                     TextSendMessage("上記のコマンドを登録したいサーバーのDiscordチャットに入力してください！")
@@ -127,9 +127,9 @@ def post_back(event):
 
                 delete_flex_message["contents"].append(copy.deepcopy(delete_flex_message_contents))
 
-            line_bot_api.push_message(event.source.user_id, FlexSendMessage(alt_text="登録メッセージ", contents=delete_flex_message))
+            line_bot_api.reply_message(event.reply_token, FlexSendMessage(alt_text="登録メッセージ", contents=delete_flex_message))
         else:
-            line_bot_api.push_message(event.source.user_id, TextSendMessage("登録してるサーバーが１つもありません！"))
+            line_bot_api.reply_message(event.reply_token, TextSendMessage("登録してるサーバーが１つもありません！"))
 
     elif event.postback.data == "setting_server":
         with session_mng.session_create() as session:
@@ -162,9 +162,9 @@ def post_back(event):
 
                 setting_flex_message["contents"].append(copy.deepcopy(setting_flex_message_contents))
 
-            line_bot_api.push_message(event.source.user_id, FlexSendMessage(alt_text="設定メッセージ", contents=setting_flex_message))
+            line_bot_api.reply_message(event.reply_token, FlexSendMessage(alt_text="設定メッセージ", contents=setting_flex_message))
         else:
-            line_bot_api.push_message(event.source.user_id, TextSendMessage("登録してるサーバーが１つもありません！"))
+            line_bot_api.reply_message(event.reply_token, TextSendMessage("登録してるサーバーが１つもありません！"))
 
     elif event.postback.data == "select_server":
         with session_mng.session_create() as session:
@@ -184,14 +184,14 @@ def post_back(event):
 
                 select_flex_message["contents"].append(copy.deepcopy(select_flex_message_contents))
 
-            line_bot_api.push_message(event.source.user_id, FlexSendMessage(alt_text="選択メッセージ", contents=select_flex_message))
+            line_bot_api.reply_message(event.reply_token, FlexSendMessage(alt_text="選択メッセージ", contents=select_flex_message))
         else:
-            line_bot_api.push_message(event.source.user_id, TextSendMessage("登録してるサーバーが１つもありません！"))
+            line_bot_api.reply_message(event.reply_token, TextSendMessage("登録してるサーバーが１つもありません！"))
 
     elif event.postback.data == "register_accept":
         with session_mng.session_create() as session:
             if line_crud.exists_line_user(session, event.source.user_id) == False:
-                line_bot_api.push_message(event.source.user_id, TextSendMessage("既に選択済みのメッセージです！"))
+                line_bot_api.reply_message(event.reply_token, TextSendMessage("既に選択済みのメッセージです！"))
                 return
 
         with session_mng.session_create() as session:
@@ -200,22 +200,22 @@ def post_back(event):
         with session_mng.session_create() as session:
             line_crud.set_user_info(session, event.source.user_id)
         
-        line_bot_api.push_message(event.source.user_id, TextSendMessage("サーバーへの登録が完了しました！"))
+        line_bot_api.reply_message(event.reply_token, TextSendMessage("サーバーへの登録が完了しました！"))
     
     elif event.postback.data == "register_deny":
         with session_mng.session_create() as session:
             if line_crud.exists_line_user(session, event.source.user_id) == False:
-                line_bot_api.push_message(event.source.user_id, TextSendMessage("既に選択済みのメッセージです！"))
+                line_bot_api.reply_message(event.reply_token, TextSendMessage("既に選択済みのメッセージです！"))
                 return
 
-        line_bot_api.push_message(event.source.user_id, TextSendMessage("サーバーへの登録を拒否しました。\n再度登録する場合はパスワードを再生成してください。"))
+        line_bot_api.reply_message(event.reply_token, TextSendMessage("サーバーへの登録を拒否しました。\n再度登録する場合はパスワードを再生成してください。"))
 
     else:
         data = event.postback.data.split(",")
         if data[0] == "delete":
             with session_mng.session_create() as session:
                 line_crud.delete_server(session, event.source.user_id, data[1])
-            line_bot_api.push_message(event.source.user_id, TextSendMessage("サーバーとの連携を解除しました！"))
+            line_bot_api.reply_message(event.reply_token, TextSendMessage("サーバーとの連携を解除しました！"))
 
         if data[0] == "setting_text":
             with session_mng.session_create() as session:
@@ -226,10 +226,10 @@ def post_back(event):
             elif text_notice == False:
                 notice_message = "オフ"
             elif text_notice == None:
-                line_bot_api.push_message(event.source.user_id, TextSendMessage("設定したサーバーとは連携解除が解除されています！"))
+                line_bot_api.reply_message(event.reply_token, TextSendMessage("設定したサーバーとは連携解除が解除されています！"))
                 return
 
-            line_bot_api.push_message(event.source.user_id, TextSendMessage("サーバーのメッセージ通知を {} にしました！".format(notice_message)))
+            line_bot_api.reply_message(event.reply_token, TextSendMessage("サーバーのメッセージ通知を {} にしました！".format(notice_message)))
 
         if data[0] == "setting_vc":
             with session_mng.session_create() as session:
@@ -240,19 +240,19 @@ def post_back(event):
             elif text_notice == False:
                 notice_message = "オフ"
             elif text_notice == None:
-                line_bot_api.push_message(event.source.user_id, TextSendMessage("設定したサーバーとは連携解除が解除されています！"))
+                line_bot_api.reply_message(event.reply_token, TextSendMessage("設定したサーバーとは連携解除が解除されています！"))
                 return
 
-            line_bot_api.push_message(event.source.user_id, TextSendMessage("サーバーのボイスチャット通知を {} にしました！".format(notice_message)))
+            line_bot_api.reply_message(event.reply_token, TextSendMessage("サーバーのボイスチャット通知を {} にしました！".format(notice_message)))
         
         if data[0] == "select":
             with session_mng.session_create() as session:
                 user_res = line_crud.set_user_talk_server(session, event.source.user_id, data[1])
 
             if user_res == True:
-                line_bot_api.push_message(event.source.user_id, TextSendMessage("メッセージ送信先のサーバーを変更しました！"))
+                line_bot_api.reply_message(event.reply_token, TextSendMessage("メッセージ送信先のサーバーを変更しました！"))
             else:
-                line_bot_api.push_message(event.source.user_id, TextSendMessage("設定したサーバーとは連携解除が解除されています！"))
+                line_bot_api.reply_message(event.reply_token, TextSendMessage("設定したサーバーとは連携解除が解除されています！"))
 
 class Line():
     @staticmethod
