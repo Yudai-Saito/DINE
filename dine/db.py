@@ -117,13 +117,18 @@ class LineCrud:
         return session.query(User.discord_id).filter(User.line_id == line_id).scalar()
 
     def get_webhook_id(self, session, line_id):
-        talk_server = session.query(User.talk_server).filter(User.line_id == line_id).scalar()
+        user_join_stat = session.query(session.query(ServerInfo).filter(ServerInfo.line_id == line_id).exists()).scalar()
 
-        if talk_server == None:
-            return None
+        if user_join_stat == True: 
+            talk_server = session.query(User.talk_server).filter(User.line_id == line_id).scalar()
+
+            if talk_server == None:
+                return None
+            else:
+                return session.query(DiscordServer.webhook_id).filter(DiscordServer.server_id == talk_server).scalar()
         else:
-            return session.query(DiscordServer.webhook_id).filter(DiscordServer.server_id == talk_server).scalar()
-
+            return False
+            
     def set_talk_time(self, session, line_id):
         session.query(User).filter(User.line_id == line_id).update({User.talk_time : datetime.datetime.now()})
 
