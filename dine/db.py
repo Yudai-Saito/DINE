@@ -100,7 +100,7 @@ class LineCrud:
         return session.query(ServerInfo.voice_notice).filter(ServerInfo.line_id == line_id, ServerInfo.server_id == server_id).scalar()
         
     def set_user_info(self, session, line_id):
-        discord_server = session.query(ServerInfo.server_id).filter(User.line_id == line_id).all()
+        discord_server = session.query(ServerInfo.server_id).filter(ServerInfo.line_id == line_id).all()
         if len(discord_server) == 1:
             session.query(User).filter(User.line_id == line_id).update({User.talk_server : discord_server[0][0]})
         else:
