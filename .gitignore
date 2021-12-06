@@ -9,3 +9,8 @@
 
 /log/sqlalchemy/*
 !.gitkeep
+
+__pycache__
+
+.env
+
