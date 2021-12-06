@@ -1,0 +1,59 @@
+version: "3"
+
+services:
+  dine-db:
+    image: postgres
+    networks:
+      - dinenet
+    volumes:
+      - dine_db_volume:/var/lib/postgresql/data
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
+  dine-ngrok:
+    # *** ARM CPU -> image: wernight/ngrok:armhf ***
+    image: wernight/ngrok
+    networks:
+      - dinenet
+    restart: always
+    environment:
+      NGROK_AUTH: ${NGROK_AUTH}
+      NGROK_PROTOCOL: http
+      NGROK_PORT: dine:8000
+      NGROK_REGION: ap
+      NGROK_DEBUG: 1
+
+  dine:
+    depends_on:
+      - dine-db
+      - dine-ngrok
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - dinenet
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/usr/src/app
+    restart: always
+    environment:
+      DBMS: postgresql
+      USER_NAME: ${POSTGRES_USER}
+      PASSWORD: ${POSTGRES_PASSWORD}
+      HOST: dine-db
+      DBMS_PORT: 5432
+      DATABASE: ${POSTGRES_DB}
+      DISCORD_TOKEN: ${DISCORD_TOKEN}
+      LINE_ACCESS_TOKEN: ${LINE_ACCESS_TOKEN}
+      LINE_CHANNEL_SECRET: ${LINE_CHANNEL_SECRET}
+    tty: true
+
+networks:
+  dinenet:
+
+volumes:
+  dine_db_volume:
