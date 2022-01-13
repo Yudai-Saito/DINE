@@ -1,4 +1,3 @@
-
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/Yudai-Saito/DINE)
 [![GitHub stars](https://img.shields.io/github/stars/Yudai-Saito/DINE)](https://github.com/Yudai-Saito/DINE/stargazers)
 ![GitHub all releases](https://img.shields.io/github/downloads/Yudai-Saito/DINE/total)
@@ -9,7 +8,7 @@
 </div>
 
 # ☁DINE 
-DINEは、あなたのLINEとDiscordをスマートにお繋げします。 
+DiscordからLINEに、LINEからDiscordにメッセージを送信！あなたのSNSを1つにまとめます！  
 
 **DINEを使用される方は、公式Discordサーバーへの参加をお願いしております : [Discordサーバー参加はこちら](https://discord.gg/cRaQ3XnzNb)**  
 **フィードバック, 更新情報, 導入方法, FAQなど、オトクな情報いっぱいです。**
@@ -33,15 +32,47 @@ DINEは、あなたのLINEとDiscordをスマートにお繋げします。
 1. Discordサーバーに連携用パスワードを入力して連携を完了させましょう。
 1. LINEとDiscordからメッセージを送受信できることを確認しましょう。
 
+# 🐳DockerでDINEを動かす
+Dockerを使うことで、たったの３ステップでDINEを動かすことができます！
+## 1.環境変数を.envに設定
+### .envファイルを作成し、以下の環境変数を設定します。  
+1. **POSTGRES_USER**, **POSTGRES_PASSWORD**, **POSTGRES_DB**は、DINEのデータベースに接続するための設定です。自由に設定してください。
+1. **NGROK_AUTH**は、[ngrok](https://ngrok.com/)にログインして、Your Authtokenを設定します。
+1. **DISCORD_TOKEN**は、[DiscordBot](https://discord.com/developers/applications)のトークンを設定します。
+1. **LINE_ACCESS_TOKEN**, **LINE_CHANNEL_SECRET**は、[LINEBot](https://developers.line.biz/console/)のChannel access tokenとChannel Secretを設定します。
+```
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+POSTGRES_DB=
+
+NGROK_AUTH=
+
+DISCORD_TOKEN=
+LINE_ACCESS_TOKEN=
+LINE_CHANNEL_SECRET=
+```
+## 2.コンテナを起動
+コンテナを起動させます。docker-compose.ymlがあるディレクトリで実行してください。DINEが動き始めます。
+```
+docker-compose up -d
+```
+
+## 3.LINEのWebhook URLを設定
+ngrokのURLを取得します。 **url=https://** から始まるURLをLINEのWebhook URLに設定します。
+```
+docker-compose logs dine-ngrok
+```
 # 🔨開発内容と今後の方針
 ## 使用したライブラリ・技術
 * Python  
-	* [sqlalchemy](https://github.com/sqlalchemy/sqlalchemy)
-	* [responder](https://github.com/taoufik07/responder)
-	* [discord.py](https://github.com/Rapptz/discord.py)
-	* [line-bot-sdk](https://github.com/line/line-bot-sdk-python)
-* PostgreSQL
-* ngrok  
+	* ORM : [sqlalchemy](https://github.com/sqlalchemy/sqlalchemy)
+	* BackEnd : [responder](https://github.com/taoufik07/responder)
+	* DiscordBOT : [discord.py](https://github.com/Rapptz/discord.py)
+	* LINEBOT : [line-bot-sdk](https://github.com/line/line-bot-sdk-python)
+* DBMS : [PostgreSQL](https://www.postgresql.org/)
+* PortForwarding : [ngrok](https://ngrok.com/)  
+* Container : [Docker](https://www.docker.com/), [Docker Compose](https://docs.docker.com/compose/overview/)
+* VersionControl : [GitHub](https://github.com/Yudai-Saito/DINE)
 ## プロジェクトの反省
 >今回のプロジェクトでは、並列処理, 非同期処理を使用したため、学習コストは高めだった。両者の理解により、ブロッキングせず, 高パフォーマンスなシステムを作るにはどうしたら良いのかという考えが身につき,今後のプロジェクトでも活かそうと思う。  
 >webフレームワークの使用、ORMでのCRUD操作などを通し、バックエンドの楽しさと興味深さがより一層深まった。次回は、これらの機能が詰まったWebアプリを作ろうと思う。  
